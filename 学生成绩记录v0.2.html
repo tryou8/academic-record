@@ -1,0 +1,3359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学生成绩记录</title>
+    <style>
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, "Segoe UI", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  color: #1e293b;
+  background: #eef3ff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --line: rgba(148, 163, 184, 0.28);
+  --panel: rgba(255, 255, 255, 0.72);
+  --panel-strong: rgba(255, 255, 255, 0.88);
+  --primary: #2563eb;
+  --purple: #9a3ff2;
+  --cyan: #02b8b1;
+  --green: #10b981;
+  --orange: #f97316;
+  --red: #ef4444;
+  --shadow: 0 20px 45px rgba(69, 88, 140, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(34, 211, 238, 0.26), transparent 28%),
+    linear-gradient(115deg, #f5edff 0%, #eef4ff 50%, #e7fbf7 100%);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 28px 14px 18px;
+  background: linear-gradient(180deg, rgba(250, 245, 255, 0.82), rgba(239, 246, 255, 0.82));
+  border-right: 1px solid var(--line);
+}
+
+.sidebar-version {
+  margin-top: auto;
+  padding: 10px 12px;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 6px;
+}
+
+.logo {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  box-shadow: 0 14px 28px rgba(137, 92, 246, 0.28);
+}
+
+.brand-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.nav {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: #475569;
+  background: transparent;
+  text-align: left;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.nav-button.active {
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  background: linear-gradient(100deg, var(--purple), var(--cyan));
+  box-shadow: 0 16px 28px rgba(14, 165, 233, 0.2);
+}
+
+.nav-icon {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+}
+
+.nav-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.main {
+  position: relative;
+  min-width: 0;
+  padding: 30px 28px 52px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.16;
+  font-weight: 750;
+  color: transparent;
+  background: linear-gradient(100deg, var(--purple), #3b82f6 62%, var(--cyan));
+  background-clip: text;
+}
+
+.page-description {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: #475569;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.status-pill,
+.soft-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  border-radius: 12px;
+  padding: 8px 13px;
+  color: #1d4ed8;
+  background: rgba(219, 234, 254, 0.86);
+  border: 1px solid rgba(147, 197, 253, 0.45);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.soft-pill {
+  color: #334155;
+  background: rgba(204, 251, 241, 0.58);
+}
+
+.view {
+  display: grid;
+  gap: 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.span-4 {
+  grid-column: span 4;
+}
+
+.span-5 {
+  grid-column: span 5;
+}
+
+.span-6 {
+  grid-column: span 6;
+}
+
+.span-7 {
+  grid-column: span 7;
+}
+
+.span-8 {
+  grid-column: span 8;
+}
+
+.span-12 {
+  grid-column: span 12;
+}
+
+.form-grid .span-6 {
+  grid-column: span 2;
+}
+
+.form-grid .span-12 {
+  grid-column: 1 / -1;
+}
+
+.card {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  padding: 18px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 14px;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.metric {
+  display: grid;
+  gap: 8px;
+  min-height: 126px;
+}
+
+.metric-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 14px 24px rgba(15, 23, 42, 0.14);
+}
+
+.metric-value {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-grid .field-new-row {
+  grid-column-start: 1;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+  min-height: 40px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 9px 11px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.78);
+  outline: none;
+}
+
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: rgba(37, 99, 235, 0.62);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 14px;
+  color: #fff;
+  background: linear-gradient(100deg, #2563eb, #0ea5e9);
+  font-weight: 750;
+  box-shadow: 0 12px 22px rgba(37, 99, 235, 0.2);
+}
+
+.button.secondary {
+  color: #1d4ed8;
+  background: rgba(219, 234, 254, 0.85);
+  box-shadow: none;
+}
+
+.button.ghost {
+  color: #334155;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+
+.button.ghost.danger {
+  color: #b91c1c;
+  background: rgba(254, 242, 242, 0.82);
+  border-color: rgba(248, 113, 113, 0.42);
+}
+
+.button.danger {
+  background: linear-gradient(100deg, #ef4444, #f97316);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+th,
+td {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  color: #475569;
+  background: rgba(241, 245, 249, 0.82);
+  font-size: 13px;
+}
+
+td input,
+td select {
+  width: 100%;
+  min-width: 90px;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+.student-list,
+.record-list {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.query-results-card {
+  min-height: 380px;
+}
+
+.query-results-card .record-list {
+  min-height: 300px;
+}
+
+.query-results-card .empty {
+  min-height: 280px;
+}
+
+.list-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.record-item {
+  align-self: start;
+}
+
+.record-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.list-title {
+  margin: 0;
+  font-weight: 750;
+}
+
+.list-meta {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.entry-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-item {
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.summary-value {
+  margin: 3px 0 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.summary-rank-input {
+  width: 100%;
+  min-height: 36px;
+  margin-top: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 7px 9px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.empty {
+  display: grid;
+  min-height: 160px;
+  place-items: center;
+  color: var(--muted);
+  text-align: center;
+}
+
+.notice {
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-radius: 18px;
+  padding: 16px;
+  color: #1d4ed8;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.72), rgba(204, 251, 241, 0.62));
+}
+
+.notice.warning {
+  margin-bottom: 16px;
+  color: #92400e;
+  border-color: rgba(245, 158, 11, 0.32);
+  background: linear-gradient(100deg, rgba(255, 251, 235, 0.94), rgba(254, 243, 199, 0.68));
+}
+
+.notice strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.message {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 20;
+  max-width: min(420px, calc(100vw - 48px));
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: #fff;
+  background: #0f172a;
+  box-shadow: var(--shadow);
+}
+
+.message.error {
+  background: #b91c1c;
+}
+
+.footer-credit {
+  position: fixed;
+  right: 22px;
+  bottom: 8px;
+  color: rgba(71, 85, 105, 0.78);
+  font-family: "Segoe UI", sans-serif;
+  font-size: 12px;
+}
+
+.chart {
+  width: 100%;
+  min-height: 260px;
+}
+
+.chart svg {
+  width: 100%;
+  height: 260px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  padding: 3px 9px;
+  color: #047857;
+  background: rgba(209, 250, 229, 0.78);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.badge.warn {
+  color: #b45309;
+  background: rgba(254, 243, 199, 0.82);
+}
+
+.detail-box {
+  display: none;
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.detail-box.open {
+  display: block;
+}
+
+.checkbox-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 22px;
+}
+
+.checkbox-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0;
+  white-space: nowrap;
+  background: transparent;
+}
+
+.checkbox-row input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #0f8ea0;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.feature-item {
+  display: grid;
+  gap: 6px;
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.feature-item span,
+.timeline p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.timeline {
+  display: grid;
+  gap: 10px;
+}
+
+@media (max-width: 1100px) {
+  .grid,
+  .form-grid,
+  .summary-strip,
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .span-3,
+  .span-4,
+  .span-5,
+  .span-6,
+  .span-7,
+  .span-8,
+  .span-12 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    gap: 14px;
+    padding: 12px;
+  }
+
+  .brand {
+    justify-content: space-between;
+  }
+
+  .nav {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .nav-button {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .main {
+    padding: 20px 14px 58px;
+  }
+
+  .topbar {
+    display: grid;
+  }
+
+  .grid,
+  .form-grid,
+  .summary-strip,
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .span-3,
+  .span-4,
+  .span-5,
+  .span-6,
+  .span-7,
+  .span-8,
+  .span-12 {
+    grid-column: span 1;
+  }
+
+  .page-title {
+    font-size: 25px;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+const STAGES = ['小学', '初中', '高中'];
+const SEMESTERS = ['上学期', '下学期'];
+const RANK_COLUMNS = ['班级排名', '学校排名', '全市排名'];
+
+const DEFAULT_SUBJECT_TEMPLATES = {
+  小学: {
+    一年级: ['语文', '数学', '英语'],
+    二年级: ['语文', '数学', '英语'],
+    三年级: ['语文', '数学', '英语'],
+    四年级: ['语文', '数学', '英语'],
+    五年级: ['语文', '数学', '英语'],
+    六年级: ['语文', '数学', '英语'],
+  },
+  初中: {
+    初一: ['语文', '数学', '英语', '历史', '道法', '生物', '地理'],
+    初二: ['语文', '数学', '英语', '物理', '历史', '道法', '生物', '地理'],
+    初三: ['语文', '数学', '英语', '物理', '化学', '历史', '道法'],
+  },
+  高中: {
+    高一: ['语文', '数学', '英语', '物理', '化学', '历史', '道法', '生物', '地理'],
+    高二: ['语文', '数学', '英语', '物理', '化学', '生物'],
+    高三: ['语文', '数学', '英语', '物理', '化学', '生物'],
+  },
+};
+
+const DEFAULT_EXAM_TYPES = ['半期考', '期末考', '单元考'];
+
+const DEFAULT_ENABLED_RANKS = ['班级排名', '学校排名'];
+
+const DEFAULT_SUBJECT_RATIOS = {
+  小学: {},
+  初中: {
+    历史: 0.5,
+    政治: 0.5,
+    道法: 0.5,
+    生物: 0.3,
+    地理: 0.3,
+    物理: 0.9,
+  },
+  高中: {},
+};
+
+const MAX_RAW_SCORE = 1000;
+const MAX_RATIO = 10;
+
+const BASE_TEMPLATE_COLUMNS = [
+  '学生姓名',
+  '出生年月',
+  '阶段',
+  '年级',
+  '学期',
+  '考试类型',
+  '考试日期',
+  '科目',
+  '原始成绩',
+  '折算比例',
+];
+
+const SUBJECT_RANK_COLUMNS = ['原始成绩排名', '折算后成绩排名'];
+const TOTAL_RANK_COLUMNS = ['原始分排名', '折算分排名'];
+
+const EXPORT_COLUMNS = [
+  ...BASE_TEMPLATE_COLUMNS,
+  ...SUBJECT_RANK_COLUMNS,
+  '折算后成绩',
+  '原始总分',
+  '原始分排名',
+  '折算总分',
+  '折算分排名',
+  ...RANK_COLUMNS,
+];
+
+function recommendSemester(date = new Date()) {
+  const month = date.getMonth() + 1;
+  return month >= 8 || month <= 1 ? '上学期' : '下学期';
+}
+
+function recommendStageAndGrade(birthMonth, date = new Date()) {
+  if (!birthMonth) {
+    return { stage: '小学', grade: '一年级' };
+  }
+
+  const birthYear = Number(String(birthMonth).slice(0, 4));
+  const birthMonthNumber = Number(String(birthMonth).slice(5, 7));
+  const schoolYear = date.getMonth() + 1 >= 9 ? date.getFullYear() : date.getFullYear() - 1;
+  let gradeNumber = schoolYear - birthYear - (birthMonthNumber >= 9 ? 6 : 5);
+  gradeNumber = Math.min(Math.max(gradeNumber, 1), 12);
+
+  if (gradeNumber <= 6) {
+    return { stage: '小学', grade: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级'][gradeNumber - 1] };
+  }
+
+  if (gradeNumber <= 9) {
+    return { stage: '初中', grade: ['初一', '初二', '初三'][gradeNumber - 7] };
+  }
+
+  return { stage: '高中', grade: ['高一', '高二', '高三'][gradeNumber - 10] };
+}
+
+function getSubjectsForGrade(stage, grade, templates = DEFAULT_SUBJECT_TEMPLATES, ratios = DEFAULT_SUBJECT_RATIOS) {
+  return (templates[stage]?.[grade] || []).map((name) => ({
+    name,
+    ratio: ratios[stage]?.[name] ?? 1,
+  }));
+}
+
+function calculateConvertedScore(rawScore, ratio = 1) {
+  return roundScore(Number(rawScore) * Number(ratio));
+}
+
+function calculateTotals(subjects) {
+  return subjects.reduce(
+    (totals, subject) => {
+      const rawScore = Number(subject.rawScore || 0);
+      const convertedScore =
+        subject.convertedScore === undefined
+          ? calculateConvertedScore(rawScore, subject.ratio ?? 1)
+          : Number(subject.convertedScore || 0);
+
+      return {
+        totalRawScore: roundScore(totals.totalRawScore + rawScore),
+        totalConvertedScore: roundScore(totals.totalConvertedScore + convertedScore),
+      };
+    },
+    { totalRawScore: 0, totalConvertedScore: 0 },
+  );
+}
+
+function generateBlankScoreTemplateCsv(options) {
+  return rowsToCsv(buildBlankScoreTemplateRows(options));
+}
+
+function generateBlankScoreTemplateExcelHtml(options) {
+  return rowsToExcelHtml(buildBlankScoreTemplateRows(options), '成绩空模板');
+}
+
+function buildBlankScoreTemplateRows(options) {
+  const columns = [
+    ...BASE_TEMPLATE_COLUMNS,
+    ...SUBJECT_RANK_COLUMNS,
+    ...TOTAL_RANK_COLUMNS,
+    ...normalizeRankColumns(options.enabledRanks),
+  ];
+  const rows = (options.subjects || []).map((subject) => [
+    options.studentName,
+    options.birthMonth,
+    options.stage,
+    options.grade,
+    options.semester,
+    options.examType,
+    options.examDate,
+    subject.name,
+    '',
+    subject.ratio ?? 1,
+    '',
+    '',
+    '',
+    '',
+    ...normalizeRankColumns(options.enabledRanks).map(() => ''),
+  ]);
+
+  return [columns, ...rows];
+}
+
+function parseScoreTemplateCsv(csvText) {
+  const rows = csvToRows(csvText);
+  const [header, ...bodyRows] = rows;
+  const errors = [];
+
+  if (!header?.length) {
+    return { records: [], errors: [{ row: 1, column: '文件', message: '导入文件为空' }] };
+  }
+
+  for (const column of BASE_TEMPLATE_COLUMNS) {
+    if (!header.includes(column)) {
+      errors.push({ row: 1, column, message: `缺少列：${column}` });
+    }
+  }
+
+  const rankColumns = header.filter((column) => RANK_COLUMNS.includes(column));
+  const groups = new Map();
+
+  bodyRows.forEach((row, bodyIndex) => {
+    const rowNumber = bodyIndex + 2;
+    if (row.every((value) => String(value || '').trim() === '')) {
+      return;
+    }
+
+    const item = objectFromRow(header, row);
+    const requiredColumns = ['学生姓名', '阶段', '年级', '学期', '考试类型', '考试日期', '科目'];
+    for (const column of requiredColumns) {
+      if (!String(item[column] || '').trim()) {
+        errors.push({ row: rowNumber, column, message: `${column}不能为空` });
+      }
+    }
+
+    const rawScore = parseNonNegativeNumber(item['原始成绩'], MAX_RAW_SCORE);
+    if (rawScore === null) {
+      errors.push({ row: rowNumber, column: '原始成绩', message: `原始成绩必须是 0 到 ${MAX_RAW_SCORE} 之间的数字` });
+    }
+
+    const ratio = parsePositiveNumber(item['折算比例'] || '1', MAX_RATIO);
+    if (ratio === null) {
+      errors.push({ row: rowNumber, column: '折算比例', message: `折算比例必须是 0 到 ${MAX_RATIO} 之间的数字` });
+    }
+
+    const ranks = {};
+    const rawRank = parseOptionalPositiveInteger(item['原始成绩排名']);
+    if (rawRank === null) {
+      errors.push({ row: rowNumber, column: '原始成绩排名', message: '原始成绩排名必须是正整数' });
+    }
+
+    const convertedRank = parseOptionalPositiveInteger(item['折算后成绩排名']);
+    if (convertedRank === null) {
+      errors.push({ row: rowNumber, column: '折算后成绩排名', message: '折算后成绩排名必须是正整数' });
+    }
+
+    const totalRawRank = parseOptionalPositiveInteger(item['原始分排名']);
+    if (totalRawRank === null) {
+      errors.push({ row: rowNumber, column: '原始分排名', message: '原始分排名必须是正整数' });
+    }
+
+    const totalConvertedRank = parseOptionalPositiveInteger(item['折算分排名']);
+    if (totalConvertedRank === null) {
+      errors.push({ row: rowNumber, column: '折算分排名', message: '折算分排名必须是正整数' });
+    }
+
+    for (const rankColumn of rankColumns) {
+      const value = String(item[rankColumn] || '').trim();
+      if (!value) {
+        continue;
+      }
+
+      const parsedRank = Number(value);
+      if (!Number.isInteger(parsedRank) || parsedRank <= 0) {
+        errors.push({ row: rowNumber, column: rankColumn, message: `${rankColumn}必须是正整数` });
+      } else {
+        ranks[rankColumn] = parsedRank;
+      }
+    }
+
+    if (rawScore === null || ratio === null) {
+      return;
+    }
+
+    const stage = item['阶段'];
+    const grade = item['年级'];
+    const subjectName = item['科目'];
+    const allowedSubjects = getSubjectsForGrade(stage, grade).map((subject) => subject.name);
+    if (!STAGES.includes(stage)) {
+      errors.push({ row: rowNumber, column: '阶段', message: '阶段不在允许范围内' });
+    }
+    if (!Object.hasOwn(DEFAULT_SUBJECT_TEMPLATES[stage] || {}, grade)) {
+      errors.push({ row: rowNumber, column: '年级', message: '年级不在当前阶段范围内' });
+    }
+    if (!SEMESTERS.includes(item['学期'])) {
+      errors.push({ row: rowNumber, column: '学期', message: '学期不在允许范围内' });
+    }
+    if (!isIsoDate(item['考试日期'])) {
+      errors.push({ row: rowNumber, column: '考试日期', message: '考试日期必须是 YYYY-MM-DD 格式' });
+    }
+    if (allowedSubjects.length && !allowedSubjects.includes(subjectName)) {
+      errors.push({ row: rowNumber, column: '科目', message: '科目不在当前年级科目模板中' });
+    }
+
+    const key = [
+      item['学生姓名'],
+      item['出生年月'],
+      stage,
+      grade,
+      item['学期'],
+      item['考试类型'],
+      item['考试日期'],
+    ].join('::');
+
+    if (!groups.has(key)) {
+      groups.set(key, {
+        studentName: item['学生姓名'],
+        birthMonth: item['出生年月'],
+        stage: item['阶段'],
+        grade: item['年级'],
+        semester: item['学期'],
+        examType: item['考试类型'],
+        examDate: item['考试日期'],
+        subjects: [],
+        ranks: {},
+        totalRanks: {},
+      });
+    }
+
+    const group = groups.get(key);
+    if (group.subjects.some((subject) => subject.name === subjectName)) {
+      errors.push({ row: rowNumber, column: '科目', message: '同一次考试中科目重复' });
+    }
+    for (const [rankColumn, rankValue] of Object.entries(ranks)) {
+      if (group.ranks[rankColumn] !== undefined && group.ranks[rankColumn] !== rankValue) {
+        errors.push({ row: rowNumber, column: rankColumn, message: `${rankColumn}不一致` });
+      }
+      group.ranks[rankColumn] = rankValue;
+    }
+    if (totalRawRank !== undefined) {
+      if (group.totalRanks.rawRank !== undefined && group.totalRanks.rawRank !== totalRawRank) {
+        errors.push({ row: rowNumber, column: '原始分排名', message: '原始分排名不一致' });
+      }
+      group.totalRanks.rawRank = totalRawRank;
+    }
+    if (totalConvertedRank !== undefined) {
+      if (group.totalRanks.convertedRank !== undefined && group.totalRanks.convertedRank !== totalConvertedRank) {
+        errors.push({ row: rowNumber, column: '折算分排名', message: '折算分排名不一致' });
+      }
+      group.totalRanks.convertedRank = totalConvertedRank;
+    }
+    group.subjects.push({
+      name: subjectName,
+      rawScore,
+      ratio,
+      convertedScore: calculateConvertedScore(rawScore, ratio),
+      ...(rawRank !== undefined ? { rawRank } : {}),
+      ...(convertedRank !== undefined ? { convertedRank } : {}),
+    });
+  });
+
+  if (errors.length) {
+    return { records: [], errors };
+  }
+
+  const records = Array.from(groups.values()).map((record) => ({
+    ...record,
+    ...calculateTotals(record.subjects),
+  }));
+
+  return { records, errors: [] };
+}
+
+function exportRecordsToCsv(records) {
+  return rowsToCsv(buildExportRows(records));
+}
+
+function exportRecordsToExcelHtml(records) {
+  return rowsToExcelHtml(buildExportRows(records), '成绩导出');
+}
+
+function buildExportRows(records) {
+  const rows = [EXPORT_COLUMNS];
+
+  for (const record of records) {
+    const totals =
+      record.totalRawScore === undefined || record.totalConvertedScore === undefined
+        ? calculateTotals(record.subjects || [])
+        : {
+            totalRawScore: record.totalRawScore,
+            totalConvertedScore: record.totalConvertedScore,
+          };
+
+    for (const subject of record.subjects || []) {
+      const convertedScore =
+        subject.convertedScore === undefined
+          ? calculateConvertedScore(subject.rawScore, subject.ratio)
+          : subject.convertedScore;
+
+      rows.push([
+        record.studentName,
+        record.birthMonth,
+        record.stage,
+        record.grade,
+        record.semester,
+        record.examType,
+        record.examDate,
+        subject.name,
+        subject.rawScore,
+        subject.ratio,
+        subject.rawRank ?? '',
+        subject.convertedRank ?? '',
+        convertedScore,
+        totals.totalRawScore,
+        record.totalRanks?.rawRank ?? '',
+        totals.totalConvertedScore,
+        record.totalRanks?.convertedRank ?? '',
+        ...RANK_COLUMNS.map((rankColumn) => record.ranks?.[rankColumn] ?? ''),
+      ]);
+    }
+  }
+
+  return rows;
+}
+
+function createScoreRecord(input) {
+  const subjects = (input.subjects || []).map((subject) => {
+    const rawScore = assertScoreNumber(subject.rawScore ?? 0, '原始成绩');
+    const ratio = assertRatioNumber(subject.ratio ?? 1);
+    return {
+      name: String(subject.name || '').trim(),
+      rawScore,
+      ratio,
+      convertedScore: calculateConvertedScore(rawScore, ratio),
+      ...(subject.rawRank ? { rawRank: assertRankNumber(subject.rawRank, '原始成绩排名') } : {}),
+      ...(subject.convertedRank ? { convertedRank: assertRankNumber(subject.convertedRank, '折算后成绩排名') } : {}),
+    };
+  });
+  const totals = calculateTotals(subjects);
+  const now = new Date().toISOString();
+
+  return {
+    id: input.id || createId('score'),
+    studentId: input.studentId,
+    studentName: input.studentName,
+    birthMonth: input.birthMonth || '',
+    stage: input.stage,
+    grade: input.grade,
+    semester: input.semester,
+    examType: input.examType,
+    examDate: input.examDate,
+    subjects,
+    ranks: input.ranks || {},
+    totalRanks: normalizeTotalRanks(input.totalRanks),
+    totalRawScore: totals.totalRawScore,
+    totalConvertedScore: totals.totalConvertedScore,
+    createdAt: input.createdAt || now,
+    updatedAt: now,
+  };
+}
+
+function analyzeTrend(records, mode = { type: 'all' }) {
+  const sortedRecords = [...records].sort((a, b) => String(a.examDate).localeCompare(String(b.examDate)));
+  if (sortedRecords.length < 2) {
+    return {
+      summary: '记录不足，至少需要两次同阶段考试才能判断趋势。',
+      improvements: [],
+      declines: [],
+      suggestions: ['先持续记录两次以上考试，再观察变化。'],
+      points: sortedRecords.map((record) => ({ label: record.examDate, value: record.totalConvertedScore })),
+    };
+  }
+
+  const getValue = (record) => {
+    if (mode.type === 'subject') {
+      return record.subjects.find((subject) => subject.name === mode.subject)?.convertedScore ?? null;
+    }
+    return record.totalConvertedScore;
+  };
+
+  const points = sortedRecords
+    .map((record) => ({ label: record.examDate, value: getValue(record), examType: record.examType }))
+    .filter((point) => point.value !== null);
+
+  if (points.length < 2) {
+    return {
+      summary: '该科目记录不足，暂时无法判断趋势。',
+      improvements: [],
+      declines: [],
+      suggestions: ['后续考试继续录入该科成绩后再分析。'],
+      points,
+    };
+  }
+
+  const first = points[0].value;
+  const last = points.at(-1).value;
+  const delta = roundScore(last - first);
+  const summary =
+    delta > 0
+      ? `整体提升 ${delta} 分，趋势向好。`
+      : delta < 0
+        ? `整体下降 ${Math.abs(delta)} 分，需要关注波动。`
+        : '整体保持稳定，可以继续巩固。';
+
+  const subjectChanges = collectSubjectChanges(sortedRecords, mode);
+  const improvements = subjectChanges.filter((item) => item.delta > 0).sort((a, b) => b.delta - a.delta);
+  const declines = subjectChanges.filter((item) => item.delta < 0).sort((a, b) => a.delta - b.delta);
+  const suggestions = [
+    improvements[0] ? `继续保持 ${improvements[0].name} 的学习节奏。` : '保持稳定作息和复盘节奏。',
+    declines[0] ? `${declines[0].name} 近期下降较明显，建议安排专项错题复盘。` : '暂无明显退步科目，可重点巩固薄弱知识点。',
+  ];
+
+  return { summary, improvements, declines, suggestions, points };
+}
+
+function createId(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function todayString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatStudentStatusLabel(students = []) {
+  if (!students.length) {
+    return '学生 0';
+  }
+
+  const firstName = students[0]?.name || '学生';
+  return students.length === 1 ? firstName : `${firstName} 等 ${students.length} 人`;
+}
+
+function formatScoreRecordTitle(record, sequence) {
+  const rawRank = record.totalRanks?.rawRank ?? '-';
+  const convertedRank = record.totalRanks?.convertedRank ?? '-';
+  return `${sequence}. ${record.studentName} · ${record.examType} · ${record.totalConvertedScore} 分 · 原始总分排名 ${rawRank} · 折算总分排名 ${convertedRank}`;
+}
+
+function findDuplicateScore(records = [], candidate = {}) {
+  return records.find((record) => {
+    if (candidate.id && record.id === candidate.id) {
+      return false;
+    }
+    return (
+      record.studentId === candidate.studentId &&
+      record.stage === candidate.stage &&
+      record.grade === candidate.grade &&
+      record.semester === candidate.semester &&
+      record.examType === candidate.examType &&
+      record.examDate === candidate.examDate
+    );
+  }) || null;
+}
+
+function validateBackupPayload(payload) {
+  const errors = [];
+  if (!payload || typeof payload !== 'object') {
+    return { ok: false, errors: ['备份文件必须是 JSON 对象'], payload: null, summary: null };
+  }
+  if (payload.version !== 1) {
+    errors.push('version 必须等于 1');
+  }
+  if (!Array.isArray(payload.students)) {
+    errors.push('students 必须是数组');
+  }
+  if (!Array.isArray(payload.scores)) {
+    errors.push('scores 必须是数组');
+  }
+
+  const students = Array.isArray(payload.students) ? payload.students.map((student, index) => validateStudentBackup(student, index, errors)) : [];
+  const studentIds = new Set(students.filter(Boolean).map((student) => student.id));
+  const scores = Array.isArray(payload.scores) ? payload.scores.map((score, index) => validateScoreBackup(score, index, studentIds, errors)) : [];
+  const settings = validateSettingsBackup(payload.settings, errors);
+
+  if (errors.length) {
+    return { ok: false, errors, payload: null, summary: null };
+  }
+
+  return {
+    ok: true,
+    errors: [],
+    payload: {
+      version: 1,
+      exportedAt: isNonEmptyString(payload.exportedAt) ? payload.exportedAt : new Date().toISOString(),
+      students,
+      scores,
+      settings,
+    },
+    summary: {
+      students: students.length,
+      scores: scores.length,
+      exportedAt: payload.exportedAt || '',
+    },
+  };
+}
+
+function validateStudentBackup(student, index, errors) {
+  const path = `students[${index}]`;
+  if (!student || typeof student !== 'object') {
+    errors.push(`${path} 必须是对象`);
+    return null;
+  }
+  if (!isSafeId(student.id)) {
+    errors.push(`${path}.id 格式不安全`);
+  }
+  if (!isReasonableText(student.name, 1, 60)) {
+    errors.push(`${path}.name 必须是 1 到 60 个字符`);
+  }
+  if (student.birthMonth && !/^\d{4}-\d{2}$/.test(student.birthMonth)) {
+    errors.push(`${path}.birthMonth 必须是 YYYY-MM 格式`);
+  }
+  if (!STAGES.includes(student.currentStage)) {
+    errors.push(`${path}.currentStage 不在允许范围内`);
+  }
+  if (!Object.hasOwn(DEFAULT_SUBJECT_TEMPLATES[student.currentStage] || {}, student.currentGrade)) {
+    errors.push(`${path}.currentGrade 不在当前阶段范围内`);
+  }
+  return {
+    id: String(student.id || ''),
+    name: String(student.name || '').trim(),
+    gender: isReasonableText(student.gender, 0, 20) ? String(student.gender || '') : '其他',
+    birthMonth: String(student.birthMonth || ''),
+    currentStage: student.currentStage,
+    currentGrade: student.currentGrade,
+    createdAt: isNonEmptyString(student.createdAt) ? student.createdAt : new Date().toISOString(),
+    updatedAt: isNonEmptyString(student.updatedAt) ? student.updatedAt : new Date().toISOString(),
+  };
+}
+
+function validateScoreBackup(score, index, studentIds, errors) {
+  const path = `scores[${index}]`;
+  if (!score || typeof score !== 'object') {
+    errors.push(`${path} 必须是对象`);
+    return null;
+  }
+  if (!isSafeId(score.id)) {
+    errors.push(`${path}.id 格式不安全`);
+  }
+  if (!studentIds.has(score.studentId)) {
+    errors.push(`${path}.studentId 没有对应学生`);
+  }
+  if (!STAGES.includes(score.stage)) {
+    errors.push(`${path}.stage 不在允许范围内`);
+  }
+  if (!Object.hasOwn(DEFAULT_SUBJECT_TEMPLATES[score.stage] || {}, score.grade)) {
+    errors.push(`${path}.grade 不在当前阶段范围内`);
+  }
+  if (!SEMESTERS.includes(score.semester)) {
+    errors.push(`${path}.semester 不在允许范围内`);
+  }
+  if (!isReasonableText(score.examType, 1, 40)) {
+    errors.push(`${path}.examType 必须是 1 到 40 个字符`);
+  }
+  if (!isIsoDate(score.examDate)) {
+    errors.push(`${path}.examDate 必须是 YYYY-MM-DD 格式`);
+  }
+  if (!Array.isArray(score.subjects) || !score.subjects.length) {
+    errors.push(`${path}.subjects 必须是非空数组`);
+  }
+
+  const allowedSubjects = getSubjectsForGrade(score.stage, score.grade).map((subject) => subject.name);
+  const seenSubjects = new Set();
+  const subjects = Array.isArray(score.subjects)
+    ? score.subjects.map((subject, subjectIndex) => {
+        const subjectPath = `${path}.subjects[${subjectIndex}]`;
+        if (!subject || typeof subject !== 'object') {
+          errors.push(`${subjectPath} 必须是对象`);
+          return null;
+        }
+        if (!isReasonableText(subject.name, 1, 40)) {
+          errors.push(`${subjectPath}.name 必须是 1 到 40 个字符`);
+        }
+        if (seenSubjects.has(subject.name)) {
+          errors.push(`${subjectPath}.name 科目重复`);
+        }
+        seenSubjects.add(subject.name);
+        if (allowedSubjects.length && !allowedSubjects.includes(subject.name)) {
+          errors.push(`${subjectPath}.name 不在当前年级科目模板中`);
+        }
+        const rawScore = parseNonNegativeNumber(subject.rawScore, MAX_RAW_SCORE);
+        const ratio = parsePositiveNumber(subject.ratio ?? 1, MAX_RATIO);
+        if (rawScore === null) {
+          errors.push(`${subjectPath}.rawScore 必须是 0 到 ${MAX_RAW_SCORE} 之间的数字`);
+        }
+        if (ratio === null) {
+          errors.push(`${subjectPath}.ratio 必须是 0 到 ${MAX_RATIO} 之间的数字`);
+        }
+        const rawRank = parseOptionalPositiveInteger(subject.rawRank);
+        const convertedRank = parseOptionalPositiveInteger(subject.convertedRank);
+        if (rawRank === null) errors.push(`${subjectPath}.rawRank 必须是正整数`);
+        if (convertedRank === null) errors.push(`${subjectPath}.convertedRank 必须是正整数`);
+        return {
+          name: String(subject.name || '').trim(),
+          rawScore: rawScore ?? 0,
+          ratio: ratio ?? 1,
+          ...(rawRank ? { rawRank } : {}),
+          ...(convertedRank ? { convertedRank } : {}),
+        };
+      }).filter(Boolean)
+    : [];
+
+  const ranks = validateRanksBackup(score.ranks, `${path}.ranks`, errors);
+  const totalRanks = validateTotalRanksBackup(score.totalRanks, `${path}.totalRanks`, errors);
+  const record = createScoreRecord({
+    id: score.id,
+    studentId: score.studentId,
+    studentName: score.studentName,
+    birthMonth: score.birthMonth,
+    stage: score.stage,
+    grade: score.grade,
+    semester: score.semester,
+    examType: score.examType,
+    examDate: score.examDate,
+    subjects,
+    ranks,
+    totalRanks,
+    createdAt: score.createdAt,
+  });
+  return {
+    ...record,
+    updatedAt: isNonEmptyString(score.updatedAt) ? score.updatedAt : record.updatedAt,
+  };
+}
+
+function validateSettingsBackup(settings, errors) {
+  if (!settings || typeof settings !== 'object') {
+    return {
+      examTypes: DEFAULT_EXAM_TYPES,
+      enabledRanks: DEFAULT_ENABLED_RANKS,
+      subjectTemplates: structuredClone(DEFAULT_SUBJECT_TEMPLATES),
+      subjectRatios: structuredClone(DEFAULT_SUBJECT_RATIOS),
+    };
+  }
+  const examTypes = Array.isArray(settings.examTypes)
+    ? settings.examTypes.filter((item) => isReasonableText(item, 1, 40)).map((item) => String(item).trim())
+    : DEFAULT_EXAM_TYPES;
+  const enabledRanks = Array.isArray(settings.enabledRanks)
+    ? settings.enabledRanks.filter((rank) => RANK_COLUMNS.includes(rank))
+    : DEFAULT_ENABLED_RANKS;
+  return {
+    examTypes: examTypes.length ? examTypes : DEFAULT_EXAM_TYPES,
+    enabledRanks: enabledRanks.length ? enabledRanks : DEFAULT_ENABLED_RANKS,
+    subjectTemplates: validateSubjectTemplates(settings.subjectTemplates, errors),
+    subjectRatios: validateSubjectRatios(settings.subjectRatios, errors),
+  };
+}
+
+function validateSubjectTemplates(value, errors) {
+  if (value === undefined) {
+    return structuredClone(DEFAULT_SUBJECT_TEMPLATES);
+  }
+  if (!value || typeof value !== 'object') {
+    errors.push('settings.subjectTemplates 必须是对象');
+    return structuredClone(DEFAULT_SUBJECT_TEMPLATES);
+  }
+  const templates = structuredClone(DEFAULT_SUBJECT_TEMPLATES);
+  for (const stage of STAGES) {
+    if (!value[stage] || typeof value[stage] !== 'object') continue;
+    for (const grade of Object.keys(templates[stage])) {
+      if (Array.isArray(value[stage][grade])) {
+        const subjects = value[stage][grade].filter((subject) => isReasonableText(subject, 1, 40)).map((subject) => String(subject).trim());
+        if (subjects.length) templates[stage][grade] = subjects;
+      }
+    }
+  }
+  return templates;
+}
+
+function validateSubjectRatios(value, errors) {
+  if (value === undefined) {
+    return structuredClone(DEFAULT_SUBJECT_RATIOS);
+  }
+  if (!value || typeof value !== 'object') {
+    errors.push('settings.subjectRatios 必须是对象');
+    return structuredClone(DEFAULT_SUBJECT_RATIOS);
+  }
+  const ratios = structuredClone(DEFAULT_SUBJECT_RATIOS);
+  for (const stage of STAGES) {
+    if (!value[stage] || typeof value[stage] !== 'object') continue;
+    ratios[stage] = ratios[stage] || {};
+    for (const [subject, ratioValue] of Object.entries(value[stage])) {
+      const ratio = parsePositiveNumber(ratioValue, MAX_RATIO);
+      if (isReasonableText(subject, 1, 40) && ratio !== null) {
+        ratios[stage][subject] = ratio;
+      }
+    }
+  }
+  return ratios;
+}
+
+function validateRanksBackup(ranks, path, errors) {
+  if (!ranks) return {};
+  if (typeof ranks !== 'object' || Array.isArray(ranks)) {
+    errors.push(`${path} 必须是对象`);
+    return {};
+  }
+  const normalized = {};
+  for (const rankColumn of RANK_COLUMNS) {
+    if (ranks[rankColumn] === undefined || ranks[rankColumn] === '') continue;
+    const rank = parseOptionalPositiveInteger(ranks[rankColumn]);
+    if (!rank) {
+      errors.push(`${path}.${rankColumn} 必须是正整数`);
+    } else {
+      normalized[rankColumn] = rank;
+    }
+  }
+  return normalized;
+}
+
+function validateTotalRanksBackup(totalRanks, path, errors) {
+  if (!totalRanks) return {};
+  if (typeof totalRanks !== 'object' || Array.isArray(totalRanks)) {
+    errors.push(`${path} 必须是对象`);
+    return {};
+  }
+  return normalizeTotalRanks(totalRanks, path, errors);
+}
+
+function normalizeTotalRanks(totalRanks = {}, path = 'totalRanks', errors = null) {
+  const normalized = {};
+  if (totalRanks.rawRank !== undefined && totalRanks.rawRank !== '') {
+    const rawRank = parseOptionalPositiveInteger(totalRanks.rawRank);
+    if (!rawRank) {
+      errors?.push(`${path}.rawRank 必须是正整数`);
+    } else {
+      normalized.rawRank = rawRank;
+    }
+  }
+  if (totalRanks.convertedRank !== undefined && totalRanks.convertedRank !== '') {
+    const convertedRank = parseOptionalPositiveInteger(totalRanks.convertedRank);
+    if (!convertedRank) {
+      errors?.push(`${path}.convertedRank 必须是正整数`);
+    } else {
+      normalized.convertedRank = convertedRank;
+    }
+  }
+  return normalized;
+}
+
+function collectSubjectChanges(records, mode = { type: 'all' }) {
+  const first = records[0];
+  const last = records.at(-1);
+  const changes = [];
+
+  for (const firstSubject of first.subjects || []) {
+    if (mode.type === 'subject' && firstSubject.name !== mode.subject) {
+      continue;
+    }
+    const lastSubject = last.subjects?.find((subject) => subject.name === firstSubject.name);
+    if (!lastSubject) {
+      continue;
+    }
+
+    changes.push({
+      name: firstSubject.name,
+      from: firstSubject.convertedScore,
+      to: lastSubject.convertedScore,
+      delta: roundScore(lastSubject.convertedScore - firstSubject.convertedScore),
+    });
+  }
+
+  return changes;
+}
+
+function normalizeRankColumns(enabledRanks = []) {
+  return RANK_COLUMNS.filter((column) => enabledRanks.includes(column));
+}
+
+function assertScoreNumber(value, label) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < 0 || number > MAX_RAW_SCORE) {
+    throw new Error(`${label}必须是 0 到 ${MAX_RAW_SCORE} 之间的数字`);
+  }
+  return number;
+}
+
+function assertRatioNumber(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0 || number > MAX_RATIO) {
+    throw new Error(`折算比例必须是 0 到 ${MAX_RATIO} 之间的数字`);
+  }
+  return number;
+}
+
+function assertRankNumber(value, label) {
+  const number = Number(value);
+  if (!Number.isInteger(number) || number <= 0) {
+    throw new Error(`${label}必须是正整数`);
+  }
+  return number;
+}
+
+function isIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) {
+    return false;
+  }
+  const date = new Date(`${value}T00:00:00`);
+  return Number.isFinite(date.getTime()) && todayString(date) === value;
+}
+
+function isSafeId(value) {
+  return /^[A-Za-z0-9_-]{1,100}$/.test(String(value || ''));
+}
+
+function isReasonableText(value, minLength, maxLength) {
+  const text = String(value ?? '').trim();
+  return text.length >= minLength && text.length <= maxLength;
+}
+
+function isNonEmptyString(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function parseNonNegativeNumber(value, max = Number.POSITIVE_INFINITY) {
+  const normalized = String(value ?? '').trim();
+  if (!normalized) {
+    return null;
+  }
+
+  const number = Number(normalized);
+  return Number.isFinite(number) && number >= 0 && number <= max ? number : null;
+}
+
+function parsePositiveNumber(value, max = Number.POSITIVE_INFINITY) {
+  const number = Number(String(value ?? '').trim());
+  return Number.isFinite(number) && number > 0 && number <= max ? number : null;
+}
+
+function parseOptionalPositiveInteger(value) {
+  const normalized = String(value ?? '').trim();
+  if (!normalized) {
+    return undefined;
+  }
+
+  const number = Number(normalized);
+  return Number.isInteger(number) && number > 0 ? number : null;
+}
+
+function objectFromRow(header, row) {
+  return Object.fromEntries(header.map((column, index) => [column, String(row[index] ?? '').trim()]));
+}
+
+function roundScore(value) {
+  return Math.round(Number(value || 0) * 100) / 100;
+}
+
+function rowsToCsv(rows) {
+  return rows.map((row) => row.map(escapeCsvValue).join(',')).join('\n');
+}
+
+function rowsToExcelHtml(rows, title) {
+  const htmlRows = rows
+    .map((row, rowIndex) => {
+      const tag = rowIndex === 0 ? 'th' : 'td';
+      return `<tr>${row.map((value) => `<${tag}>${escapeExcelHtmlValue(value)}</${tag}>`).join('')}</tr>`;
+    })
+    .join('');
+  return `<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      table { border-collapse: collapse; font-family: "Microsoft YaHei", Arial, sans-serif; }
+      th, td { border: 1px solid #d8dee9; padding: 6px 10px; mso-number-format:"\\@"; }
+      th { background: #eff6ff; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <table>
+      <caption>${escapeExcelHtmlValue(title)}</caption>
+      ${htmlRows}
+    </table>
+  </body>
+</html>`;
+}
+
+function escapeCsvValue(value) {
+  const text = neutralizeSpreadsheetFormula(String(value ?? ''));
+  if (/[",\n\r]/.test(text)) {
+    return `"${text.replaceAll('"', '""')}"`;
+  }
+  return text;
+}
+
+function escapeExcelHtmlValue(value) {
+  return neutralizeSpreadsheetFormula(String(value ?? ''))
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function neutralizeSpreadsheetFormula(text) {
+  return /^[\s]*[=+\-@]/.test(text) ? `'${text}` : text;
+}
+
+function csvToRows(text) {
+  const rows = [];
+  let row = [];
+  let value = '';
+  let inQuotes = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      value += '"';
+      index += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === ',' && !inQuotes) {
+      row.push(value);
+      value = '';
+      continue;
+    }
+
+    if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && next === '\n') {
+        index += 1;
+      }
+      row.push(value);
+      rows.push(row);
+      row = [];
+      value = '';
+      continue;
+    }
+
+    value += char;
+  }
+
+  row.push(value);
+  rows.push(row);
+
+  return rows
+    .map((currentRow) => currentRow.map((cell, cellIndex) => (cellIndex === 0 ? cell.replace(/^\uFEFF/, '') : cell)))
+    .filter((currentRow) => currentRow.some((cell) => String(cell).trim() !== ''));
+}
+
+
+const DB_NAME = 'fuzhou-academic-record';
+const DB_VERSION = 1;
+const FALLBACK_PREFIX = 'academic-record-single-file:';
+
+const DEFAULT_SETTINGS = {
+  examTypes: DEFAULT_EXAM_TYPES,
+  enabledRanks: DEFAULT_ENABLED_RANKS,
+  subjectTemplates: DEFAULT_SUBJECT_TEMPLATES,
+  subjectRatios: DEFAULT_SUBJECT_RATIOS,
+};
+
+let dbPromise;
+let forceFallbackStorage = false;
+let fallbackStorage;
+const memoryFallbackStores = {
+  students: {},
+  scores: {},
+  settings: {},
+  drafts: {},
+};
+
+function openDatabase() {
+  if (dbPromise) {
+    return dbPromise;
+  }
+
+  dbPromise = new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains('students')) {
+        db.createObjectStore('students', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('scores')) {
+        const scoreStore = db.createObjectStore('scores', { keyPath: 'id' });
+        scoreStore.createIndex('studentId', 'studentId');
+        scoreStore.createIndex('stage', 'stage');
+        scoreStore.createIndex('examDate', 'examDate');
+      }
+      if (!db.objectStoreNames.contains('settings')) {
+        db.createObjectStore('settings', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('drafts')) {
+        db.createObjectStore('drafts', { keyPath: 'id' });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+
+  return dbPromise;
+}
+
+async function getAll(storeName) {
+  if (usesFallbackStorage()) {
+    return fallbackGetAll(storeName);
+  }
+  try {
+    const db = await openDatabase();
+    return requestToPromise(db.transaction(storeName).objectStore(storeName).getAll());
+  } catch (error) {
+    activateFallbackStorage();
+    return fallbackGetAll(storeName);
+  }
+}
+
+async function putItem(storeName, item) {
+  if (usesFallbackStorage()) {
+    return fallbackPutItem(storeName, item);
+  }
+  try {
+    const db = await openDatabase();
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).put(item);
+    await txDone(tx);
+    return item;
+  } catch (error) {
+    activateFallbackStorage();
+    return fallbackPutItem(storeName, item);
+  }
+}
+
+async function deleteItem(storeName, id) {
+  if (usesFallbackStorage()) {
+    fallbackDeleteItem(storeName, id);
+    return;
+  }
+  try {
+    const db = await openDatabase();
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).delete(id);
+    await txDone(tx);
+  } catch (error) {
+    activateFallbackStorage();
+    fallbackDeleteItem(storeName, id);
+  }
+}
+
+async function getItem(storeName, id) {
+  if (usesFallbackStorage()) {
+    return fallbackGetItem(storeName, id);
+  }
+  try {
+    const db = await openDatabase();
+    return requestToPromise(db.transaction(storeName).objectStore(storeName).get(id));
+  } catch (error) {
+    activateFallbackStorage();
+    return fallbackGetItem(storeName, id);
+  }
+}
+
+async function clearStore(storeName) {
+  if (usesFallbackStorage()) {
+    fallbackClearStore(storeName);
+    return;
+  }
+  try {
+    const db = await openDatabase();
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).clear();
+    await txDone(tx);
+  } catch (error) {
+    activateFallbackStorage();
+    fallbackClearStore(storeName);
+  }
+}
+
+async function getSettings() {
+  const stored = await getItem('settings', 'main');
+  return stored ? stored.value : structuredClone(DEFAULT_SETTINGS);
+}
+
+async function saveSettings(settings) {
+  await putItem('settings', { id: 'main', value: settings });
+  return settings;
+}
+
+async function restoreDefaultSettings() {
+  const settings = structuredClone(DEFAULT_SETTINGS);
+  await saveSettings(settings);
+  return settings;
+}
+
+async function exportBackup() {
+  const [students, scores, settings] = await Promise.all([
+    getAll('students'),
+    getAll('scores'),
+    getSettings(),
+  ]);
+
+  return {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    students,
+    scores,
+    settings,
+  };
+}
+
+async function importBackup(payload) {
+  const validation = validateBackupPayload(payload);
+  if (!validation.ok) {
+    throw new Error(`备份文件格式不正确：${validation.errors.slice(0, 5).join('；')}`);
+  }
+  const safePayload = validation.payload;
+
+  if (usesFallbackStorage()) {
+    fallbackReplaceAll({
+      students: Object.fromEntries(safePayload.students.map((student) => [student.id, student])),
+      scores: Object.fromEntries(safePayload.scores.map((score) => [score.id, score])),
+      settings: { main: { id: 'main', value: safePayload.settings || structuredClone(DEFAULT_SETTINGS) } },
+    });
+    return;
+  }
+
+  try {
+    const db = await openDatabase();
+    const tx = db.transaction(['students', 'scores', 'settings'], 'readwrite');
+    tx.objectStore('students').clear();
+    tx.objectStore('scores').clear();
+    tx.objectStore('settings').put({
+      id: 'main',
+      value: safePayload.settings || structuredClone(DEFAULT_SETTINGS),
+    });
+    for (const student of safePayload.students) {
+      tx.objectStore('students').put(student);
+    }
+    for (const score of safePayload.scores) {
+      tx.objectStore('scores').put(score);
+    }
+    await txDone(tx);
+  } catch (error) {
+    activateFallbackStorage();
+    await importBackup(safePayload);
+  }
+}
+
+function getStorageStatus() {
+  if (usesFallbackStorage()) {
+    return getFallbackStorage() ? { type: 'localStorage', persistent: true } : { type: 'memory', persistent: false };
+  }
+  return { type: 'indexedDB', persistent: true };
+}
+
+function usesFallbackStorage() {
+  return forceFallbackStorage || typeof indexedDB === 'undefined' || getLocationProtocol() === 'file:';
+}
+
+function activateFallbackStorage() {
+  forceFallbackStorage = true;
+  dbPromise = null;
+}
+
+function getLocationProtocol() {
+  return typeof window === 'undefined' ? '' : window.location?.protocol || '';
+}
+
+function fallbackGetAll(storeName) {
+  return Object.values(readFallbackStore(storeName));
+}
+
+function fallbackPutItem(storeName, item) {
+  const store = readFallbackStore(storeName);
+  store[item.id] = item;
+  writeFallbackStore(storeName, store);
+  return item;
+}
+
+function fallbackDeleteItem(storeName, id) {
+  const store = readFallbackStore(storeName);
+  delete store[id];
+  writeFallbackStore(storeName, store);
+}
+
+function fallbackGetItem(storeName, id) {
+  return readFallbackStore(storeName)[id];
+}
+
+function fallbackClearStore(storeName) {
+  writeFallbackStore(storeName, {});
+}
+
+function fallbackReplaceAll(stores) {
+  const storage = getFallbackStorage();
+  if (!storage) {
+    for (const [storeName, store] of Object.entries(stores)) {
+      memoryFallbackStores[storeName] = store;
+    }
+    return;
+  }
+
+  const tempKeys = [];
+  try {
+    for (const [storeName, store] of Object.entries(stores)) {
+      const tempKey = `${FALLBACK_PREFIX}${storeName}:importing`;
+      storage.setItem(tempKey, JSON.stringify(store));
+      tempKeys.push([storeName, tempKey]);
+    }
+    for (const [storeName, tempKey] of tempKeys) {
+      storage.setItem(`${FALLBACK_PREFIX}${storeName}`, storage.getItem(tempKey) || '{}');
+      storage.removeItem(tempKey);
+    }
+  } catch (error) {
+    for (const [, tempKey] of tempKeys) {
+      try {
+        storage.removeItem(tempKey);
+      } catch (cleanupError) {
+        // Ignore cleanup failures; the original data remains under the final keys.
+      }
+    }
+    throw new Error('本地存储空间不足，导入已取消，原数据未覆盖');
+  }
+}
+
+function readFallbackStore(storeName) {
+  const storage = getFallbackStorage();
+  if (storage) {
+    try {
+      return JSON.parse(storage.getItem(`${FALLBACK_PREFIX}${storeName}`) || '{}');
+    } catch (error) {
+      return {};
+    }
+  }
+  return memoryFallbackStores[storeName] || {};
+}
+
+function writeFallbackStore(storeName, store) {
+  const storage = getFallbackStorage();
+  if (storage) {
+    try {
+      storage.setItem(`${FALLBACK_PREFIX}${storeName}`, JSON.stringify(store));
+      return;
+    } catch (error) {
+      fallbackStorage = null;
+      // Fall through to memory storage if localStorage is unavailable or full.
+    }
+  }
+  memoryFallbackStores[storeName] = store;
+}
+
+function getFallbackStorage() {
+  if (fallbackStorage !== undefined) {
+    return fallbackStorage;
+  }
+  try {
+    if (typeof localStorage === 'undefined') {
+      fallbackStorage = null;
+      return fallbackStorage;
+    }
+    const testKey = `${FALLBACK_PREFIX}test`;
+    localStorage.setItem(testKey, '1');
+    localStorage.removeItem(testKey);
+    fallbackStorage = localStorage;
+    return fallbackStorage;
+  } catch (error) {
+    fallbackStorage = null;
+    return fallbackStorage;
+  }
+}
+
+function requestToPromise(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function txDone(tx) {
+  return new Promise((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+
+const app = document.querySelector('#app');
+const navItems = [
+  ['students', '登记信息'],
+  ['entry', '录入成绩'],
+  ['importExport', '导入导出'],
+  ['query', '查询成绩'],
+  ['trend', '趋势分析'],
+  ['settings', '参数配置'],
+  ['help', '使用说明'],
+];
+
+const state = {
+  view: 'students',
+  students: [],
+  scores: [],
+  draft: null,
+  settings: null,
+  entry: {},
+  editingScoreId: null,
+  entryRecord: null,
+  storageStatus: { type: 'indexedDB', persistent: true },
+};
+
+await loadData();
+hydrateEntryDefaults();
+render();
+
+async function loadData() {
+  const [students, scores, settings, draft] = await Promise.all([
+    getAll('students'),
+    getAll('scores'),
+    getSettings(),
+    getItem('drafts', 'score-entry'),
+  ]);
+  state.students = students.sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+  state.scores = scores.sort((a, b) => String(b.examDate).localeCompare(String(a.examDate)));
+  state.settings = normalizeSettings(settings);
+  state.draft = draft?.value || null;
+  state.storageStatus = getStorageStatus();
+}
+
+function normalizeSettings(settings) {
+  const enabledRanks = (settings?.enabledRanks || DEFAULT_ENABLED_RANKS).filter((rank) => RANK_COLUMNS.includes(rank));
+  return {
+    examTypes: settings?.examTypes?.length ? settings.examTypes : DEFAULT_EXAM_TYPES,
+    enabledRanks: enabledRanks.length ? enabledRanks : DEFAULT_ENABLED_RANKS,
+    subjectTemplates: settings?.subjectTemplates || structuredClone(DEFAULT_SUBJECT_TEMPLATES),
+    subjectRatios: mergeSubjectRatios(settings?.subjectRatios),
+  };
+}
+
+function mergeSubjectRatios(customRatios = {}) {
+  const merged = structuredClone(DEFAULT_SUBJECT_RATIOS);
+  for (const [stage, ratios] of Object.entries(customRatios || {})) {
+    merged[stage] = { ...(merged[stage] || {}), ...ratios };
+  }
+  return merged;
+}
+
+function hydrateEntryDefaults() {
+  const student = state.students[0];
+  const recommendation = recommendStageAndGrade(student?.birthMonth || '');
+  state.entry = {
+    studentId: student?.id || '',
+    stage: student?.currentStage || recommendation.stage,
+    grade: student?.currentGrade || recommendation.grade,
+    semester: recommendSemester(),
+    examType: state.settings.examTypes[0],
+    examDate: todayString(),
+  };
+}
+
+function render() {
+  app.innerHTML = `
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">绩</div>
+          <div>
+            <h1 class="brand-title">学生成绩记录</h1>
+            <p class="brand-subtitle">Academic Record</p>
+          </div>
+        </div>
+        <nav class="nav">
+          ${navItems
+            .map(
+              ([id, label]) => `
+                <button class="nav-button ${state.view === id ? 'active' : ''}" data-nav="${id}" title="${label}">
+                  <span class="nav-icon">${renderNavIcon(id)}</span>
+                  <span>${label}</span>
+                </button>
+              `,
+            )
+            .join('')}
+        </nav>
+        <div class="sidebar-version">版本号：V0.2</div>
+      </aside>
+      <main class="main">
+        ${renderTopbar()}
+        ${renderStorageWarning()}
+        <section class="view">${renderView()}</section>
+        <div class="footer-credit">Provided by FUZHOU Enthusiastic Parents</div>
+      </main>
+    </div>
+  `;
+
+  app.querySelectorAll('[data-nav]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.view = button.dataset.nav;
+      render();
+    });
+  });
+
+  bindViewEvents();
+}
+
+function renderTopbar() {
+  const title = {
+    students: ['登记信息', '管理家庭多个孩子的基本信息，后续成绩会绑定到对应学生。'],
+    entry: ['录入成绩', '按学生、阶段、年级和考试类型录入成绩，实时计算折算分与汇总。'],
+    importExport: ['导入导出', '下载空模板批量填写，导入后生成成绩记录，也可导出录入后的数据。'],
+    query: ['查询成绩', '按条件查看每次登记的成绩，并展开查看科目详情。'],
+    trend: ['趋势分析', '限定同一阶段内做单科或全科趋势判断，给出本地规则建议。'],
+    settings: ['参数配置', '维护阶段、年级科目模板、考试类型、折算比例和排名项。'],
+    help: ['使用说明', '快速了解推荐流程、模板导入规则和数据备份方式。'],
+  }[state.view];
+
+  return `
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">Local IndexedDB</p>
+        <h2 class="page-title">${title[0]}</h2>
+        <p class="page-description">${title[1]}</p>
+      </div>
+      <div class="toolbar">
+        <span class="status-pill">${escapeHtml(formatStudentStatusLabel(state.students))}</span>
+        <span class="soft-pill">成绩 ${state.scores.length}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderStorageWarning() {
+  if (state.storageStatus?.type === 'localStorage') {
+    return `
+      <div class="notice warning">
+        当前是单文件本地模式，数据保存在本机浏览器 localStorage 中。清理浏览器数据、换电脑或换浏览器前，请先导出 JSON 备份。
+      </div>
+    `;
+  }
+  if (state.storageStatus?.persistent === false) {
+    return `
+      <div class="notice warning">
+        当前浏览器无法持久保存本地数据，本次录入可能会在刷新或关闭后丢失。请立即导出 JSON 备份，或换用 Chrome / Edge 正常模式打开。
+      </div>
+    `;
+  }
+  return '';
+}
+
+function renderView() {
+  if (state.view === 'students') return renderStudentsView();
+  if (state.view === 'entry') return renderEntryView();
+  if (state.view === 'importExport') return renderImportExportView();
+  if (state.view === 'query') return renderQueryView();
+  if (state.view === 'trend') return renderTrendView();
+  if (state.view === 'settings') return renderSettingsView();
+  return renderHelpView();
+}
+
+function renderStudentsView() {
+  return `
+    <div class="grid">
+      <section class="card span-5">
+        <h3 class="card-title">新增学生</h3>
+        <form id="student-form" class="form-grid">
+          <div class="field span-6"><label>姓名</label><input name="name" required placeholder="例如：陈小榕" /></div>
+          <div class="field span-6">
+            <label>性别</label>
+            <select name="gender"><option>男</option><option>女</option><option>其他</option></select>
+          </div>
+          <div class="field span-6"><label>出生年月</label><input name="birthMonth" type="month" required /></div>
+          <div class="field span-6">
+            <label>阶段</label>
+            <select name="currentStage">${renderOptions(STAGES, '小学')}</select>
+          </div>
+          <div class="field span-6">
+            <label>在读年级</label>
+            <select name="currentGrade">${renderGradeOptions('小学', '一年级')}</select>
+          </div>
+          <div class="actions span-12">
+            <button class="button" type="submit">保存学生</button>
+          </div>
+        </form>
+      </section>
+      <section class="card span-7">
+        <h3 class="card-title">学生列表</h3>
+        <div class="student-list">
+          ${
+            state.students.length
+              ? state.students.map(renderStudentItem).join('')
+              : '<div class="empty">还没有学生信息，先登记一个孩子。</div>'
+          }
+        </div>
+      </section>
+      <section class="notice span-12">
+        <strong>推荐逻辑</strong>
+        填写出生年月后会按当前日期推荐阶段和年级，保存前仍可手动调整。
+      </section>
+    </div>
+  `;
+}
+
+function renderStudentItem(student) {
+  const count = state.scores.filter((score) => score.studentId === student.id).length;
+  return `
+    <article class="list-item">
+      <div>
+        <p class="list-title">${escapeHtml(student.name)} <span class="badge">${count} 条成绩</span></p>
+        <p class="list-meta">${escapeHtml(student.gender)} · ${escapeHtml(student.birthMonth)} · ${escapeHtml(student.currentStage)} ${escapeHtml(student.currentGrade)}</p>
+      </div>
+      <button class="button ghost" data-delete-student="${student.id}">删除</button>
+    </article>
+  `;
+}
+
+function renderEntryView() {
+  if (!state.students.length) {
+    return `
+      <section class="card">
+        <div class="empty">请先在“登记信息”添加学生，再录入成绩。</div>
+      </section>
+    `;
+  }
+
+  const selectedStudent = getSelectedStudent();
+  const currentEntryRecord = getCurrentEntryRecord();
+  const subjects = currentEntryRecord
+    ? currentEntryRecord.subjects
+    : getSubjectsForGrade(
+        state.entry.stage,
+        state.entry.grade,
+        state.settings.subjectTemplates,
+        state.settings.subjectRatios,
+      );
+  const totalRawRank = currentEntryRecord?.totalRanks?.rawRank ?? '';
+  const totalConvertedRank = currentEntryRecord?.totalRanks?.convertedRank ?? '';
+
+  return `
+    <form id="entry-form" class="grid">
+      <section class="card span-12">
+        <h3 class="card-title">学生信息</h3>
+        <div class="form-grid">
+          <div class="field"><label>学生</label><select name="studentId">${state.students.map((student) => `<option value="${student.id}" ${student.id === state.entry.studentId ? 'selected' : ''}>${escapeHtml(student.name)}</option>`).join('')}</select></div>
+          <div class="field"><label>阶段</label><select name="stage">${renderOptions(STAGES, state.entry.stage)}</select></div>
+          <div class="field"><label>年级</label><select name="grade">${renderGradeOptions(state.entry.stage, state.entry.grade)}</select></div>
+          <div class="field field-new-row"><label>学期</label><select name="semester">${renderOptions(['上学期', '下学期'], state.entry.semester)}</select></div>
+          <div class="field"><label>考试类型</label><select name="examType">${renderOptions(state.settings.examTypes, state.entry.examType)}</select></div>
+          <div class="field"><label>考试日期</label><input name="examDate" type="date" value="${state.entry.examDate}" /></div>
+        </div>
+      </section>
+      <section class="card span-12">
+        <h3 class="card-title">
+          <span>${state.editingScoreId ? '编辑成绩' : '科目成绩'}</span>
+          <span class="badge">${escapeHtml(selectedStudent?.name || '')}</span>
+        </h3>
+        ${renderEntrySummary(subjects, { totalRawRank, totalConvertedRank })}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>科目</th><th>原始成绩</th><th>折算比例</th><th>折算后成绩</th><th>原始成绩排名</th><th>折算后成绩排名</th></tr>
+            </thead>
+            <tbody>
+              ${subjects
+                .map(
+                  (subject) => `
+                    <tr>
+                      <td>${escapeHtml(subject.name)}</td>
+                      <td><input data-subject-raw="${escapeHtml(subject.name)}" type="number" min="0" max="1000" step="0.5" placeholder="0" value="${subject.rawScore ?? ''}" /></td>
+                      <td><input data-subject-ratio="${escapeHtml(subject.name)}" type="number" min="0.01" step="0.01" value="${subject.ratio}" /></td>
+                      <td data-subject-converted="${escapeHtml(subject.name)}">0</td>
+                      <td><input data-subject-raw-rank="${escapeHtml(subject.name)}" type="number" min="1" step="1" placeholder="可选" value="${subject.rawRank ?? ''}" /></td>
+                      <td><input data-subject-converted-rank="${escapeHtml(subject.name)}" type="number" min="1" step="1" placeholder="可选" value="${subject.convertedRank ?? ''}" /></td>
+                    </tr>
+                  `,
+                )
+                .join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button class="button" type="submit">保存</button>
+          <button class="button secondary" type="button" id="save-draft">暂存</button>
+          ${state.draft ? '<button class="button ghost" type="button" id="restore-draft">恢复暂存</button>' : ''}
+          ${state.editingScoreId ? '<button class="button ghost" type="button" id="cancel-edit">取消编辑</button>' : ''}
+          <button class="button ghost" type="button" id="clear-entry">清空</button>
+          <button class="button ghost" type="button" id="download-current-template">下载空模板</button>
+          <button class="button ghost" type="button" id="download-current-template-excel">下载 Excel 模板</button>
+          <button class="button ghost" type="button" id="export-current-entry">导出当前录入数据</button>
+          <button class="button ghost" type="button" id="export-current-entry-excel">导出当前 Excel</button>
+        </div>
+      </section>
+    </form>
+  `;
+}
+
+function renderEntrySummary(subjects, values = {}) {
+  return `
+    <div class="summary-strip entry-summary">
+      <div class="summary-item"><span class="metric-label">原始总分</span><p class="summary-value" id="entry-total-raw">0</p></div>
+      <div class="summary-item"><span class="metric-label">原始分排名</span><input class="summary-rank-input" name="totalRawRank" type="number" min="1" step="1" placeholder="学校排名" value="${values.totalRawRank ?? ''}" /></div>
+      <div class="summary-item"><span class="metric-label">折算总分</span><p class="summary-value" id="entry-total-converted">0</p></div>
+      <div class="summary-item"><span class="metric-label">折算分排名</span><input class="summary-rank-input" name="totalConvertedRank" type="number" min="1" step="1" placeholder="学校排名" value="${values.totalConvertedRank ?? ''}" /></div>
+    </div>
+  `;
+}
+
+function renderImportExportView() {
+  const defaultStudent = getSelectedStudent() || state.students[0];
+  const stage = defaultStudent?.currentStage || '小学';
+  const grade = defaultStudent?.currentGrade || Object.keys(state.settings.subjectTemplates[stage] || {})[0];
+
+  return `
+    <div class="grid">
+      <section class="card span-6">
+        <h3 class="card-title">下载空成绩模板</h3>
+        <form id="template-form" class="form-grid">
+          <div class="field span-6"><label>学生</label><select name="studentId">${state.students.map((student) => `<option value="${student.id}" ${student.id === defaultStudent?.id ? 'selected' : ''}>${escapeHtml(student.name)}</option>`).join('')}</select></div>
+          <div class="field span-6"><label>阶段</label><select name="stage">${renderOptions(STAGES, stage)}</select></div>
+          <div class="field span-6"><label>年级</label><select name="grade">${renderGradeOptions(stage, grade)}</select></div>
+          <div class="field span-6"><label>学期</label><select name="semester">${renderOptions(['上学期', '下学期'], recommendSemester())}</select></div>
+          <div class="field span-6"><label>考试类型</label><select name="examType">${renderOptions(state.settings.examTypes, state.settings.examTypes[0])}</select></div>
+          <div class="field span-6"><label>考试日期</label><input name="examDate" type="date" value="${todayString()}" /></div>
+          <div class="actions span-12">
+            <button class="button" type="submit">下载空模板 CSV</button>
+            <button class="button ghost" id="download-template-excel" type="button">下载空模板 Excel</button>
+          </div>
+        </form>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">按模板导入成绩</h3>
+        <div class="field">
+          <label>选择填写后的 CSV 模板</label>
+          <input id="score-import-file" type="file" accept=".csv,text/csv" />
+        </div>
+        <div class="actions">
+          <button class="button" id="import-score-file" type="button">导入成绩</button>
+        </div>
+        <div id="import-result" class="notice" style="margin-top: 14px;">导入前请先下载空模板，保持列名不变。</div>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">导出录入后的成绩</h3>
+        <form id="export-form" class="form-grid">
+          <div class="field span-6"><label>学生</label><select name="studentId"><option value="">全部学生</option>${state.students.map((student) => `<option value="${student.id}">${escapeHtml(student.name)}</option>`).join('')}</select></div>
+          <div class="field span-6"><label>阶段</label><select name="stage"><option value="">全部阶段</option>${renderOptions(STAGES, '')}</select></div>
+          <div class="field span-6"><label>学期</label><select name="semester"><option value="">全部学期</option>${renderOptions(['上学期', '下学期'], '')}</select></div>
+          <div class="field span-6"><label>考试类型</label><select name="examType"><option value="">全部类型</option>${renderOptions(state.settings.examTypes, '')}</select></div>
+          <div class="actions span-12">
+            <button class="button" type="submit">导出筛选结果 CSV</button>
+            <button class="button ghost" id="export-filtered-excel" type="button">导出筛选结果 Excel</button>
+          </div>
+        </form>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">完整数据备份</h3>
+        <p class="list-meta">JSON 备份包含学生、成绩和参数配置，适合迁移或恢复。</p>
+        <div class="actions">
+          <button class="button secondary" id="export-backup" type="button">导出 JSON 备份</button>
+          <label class="button ghost" for="backup-import-file">导入 JSON 备份</label>
+          <input id="backup-import-file" type="file" accept=".json,application/json" hidden />
+        </div>
+        <div id="backup-import-result" class="notice" style="margin-top: 14px;">导入前会校验备份，并自动下载当前数据备份。</div>
+      </section>
+    </div>
+  `;
+}
+
+function renderQueryView() {
+  return `
+    <div class="grid">
+      <section class="card span-12">
+        <h3 class="card-title">筛选成绩</h3>
+        <form id="query-form" class="form-grid">
+          <div class="field"><label>学生</label><select name="studentId"><option value="">全部学生</option>${state.students.map((student) => `<option value="${student.id}">${escapeHtml(student.name)}</option>`).join('')}</select></div>
+          <div class="field"><label>阶段</label><select name="stage"><option value="">全部阶段</option>${renderOptions(STAGES, '')}</select></div>
+          <div class="field"><label>学期</label><select name="semester"><option value="">全部学期</option>${renderOptions(['上学期', '下学期'], '')}</select></div>
+          <div class="field"><label>考试类型</label><select name="examType"><option value="">全部类型</option>${renderOptions(state.settings.examTypes, '')}</select></div>
+          <div class="actions span-12">
+            <button class="button" type="submit">查询</button>
+            <button class="button ghost" id="query-export" type="button">导出当前结果</button>
+            <button class="button ghost" id="query-export-excel" type="button">导出 Excel</button>
+          </div>
+        </form>
+      </section>
+      <section class="card span-12 query-results-card">
+        <h3 class="card-title">成绩列表</h3>
+        <div id="query-list" class="record-list">${renderRecordList(state.scores)}</div>
+      </section>
+    </div>
+  `;
+}
+
+function renderRecordList(records) {
+  if (!records.length) {
+    return '<div class="empty">暂无成绩记录。</div>';
+  }
+
+  return records
+    .map(
+      (record, index) => `
+        <article class="list-item record-item">
+          <div>
+            <p class="list-title">${escapeHtml(formatScoreRecordTitle(record, index + 1))}</p>
+            <p class="list-meta">${escapeHtml(record.stage)} ${escapeHtml(record.grade)} · ${escapeHtml(record.semester)} · ${escapeHtml(record.examDate)} · 原始 ${record.totalRawScore}</p>
+          </div>
+          <div class="record-actions">
+            <button class="button ghost" data-edit-score="${record.id}">编辑</button>
+            <button class="button ghost danger" data-delete-score="${record.id}">删除</button>
+            <button class="button ghost" data-toggle-detail="${record.id}">详情</button>
+          </div>
+          <div class="detail-box" id="detail-${record.id}">
+            <div class="table-wrap">${renderSubjectTable(record)}</div>
+          </div>
+        </article>
+      `,
+    )
+    .join('');
+}
+
+function renderSubjectTable(record) {
+  return `
+    <table>
+      <thead><tr><th>科目</th><th>原始成绩</th><th>折算比例</th><th>折算后成绩</th><th>原始成绩排名</th><th>折算后成绩排名</th></tr></thead>
+      <tbody>
+        ${record.subjects.map((subject) => `<tr><td>${escapeHtml(subject.name)}</td><td>${subject.rawScore}</td><td>${subject.ratio}</td><td>${subject.convertedScore}</td><td>${subject.rawRank ?? ''}</td><td>${subject.convertedRank ?? ''}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderTrendView() {
+  const firstStudent = state.students[0];
+  const selectedStudentId = firstStudent?.id || '';
+  const selectedStage = firstStudent?.currentStage || '小学';
+  const records = filterScores({ studentId: selectedStudentId, stage: selectedStage });
+  const analysis = analyzeTrend(records, { type: 'all' });
+
+  return `
+    <div class="grid">
+      <section class="card span-12">
+        <h3 class="card-title">分析条件</h3>
+        <form id="trend-form" class="form-grid">
+          <div class="field"><label>学生</label><select name="studentId">${state.students.map((student) => `<option value="${student.id}">${escapeHtml(student.name)}</option>`).join('')}</select></div>
+          <div class="field"><label>阶段</label><select name="stage">${renderOptions(STAGES, selectedStage)}</select></div>
+          <div class="field"><label>分析范围</label><select name="mode"><option value="all">全科</option><option value="subject">单科</option></select></div>
+          <div class="field hidden" id="trend-subject-field"><label>科目</label><select name="subject">${getAllSubjects().map((subject) => `<option>${escapeHtml(subject)}</option>`).join('')}</select></div>
+          <div class="actions span-12"><button class="button" type="submit">生成分析</button></div>
+        </form>
+      </section>
+      <section class="card span-7">
+        <h3 class="card-title">分数走势</h3>
+        <div id="trend-chart" class="chart">${renderChart(analysis.points)}</div>
+      </section>
+      <section class="card span-5">
+        <h3 class="card-title">分析结论</h3>
+        <div id="trend-result">${renderTrendResult(analysis)}</div>
+      </section>
+    </div>
+  `;
+}
+
+function renderTrendResult(analysis) {
+  return `
+    <p class="notice"><strong>总体判断</strong>${escapeHtml(analysis.summary)}</p>
+    <h4>进步科目</h4>
+    ${analysis.improvements.length ? analysis.improvements.map((item) => `<p class="list-meta">${escapeHtml(item.name)}：+${item.delta} 分</p>`).join('') : '<p class="list-meta">暂无明显进步项。</p>'}
+    <h4>需要补强</h4>
+    ${analysis.declines.length ? analysis.declines.map((item) => `<p class="list-meta">${escapeHtml(item.name)}：${item.delta} 分</p>`).join('') : '<p class="list-meta">暂无明显退步项。</p>'}
+    <h4>建议</h4>
+    ${analysis.suggestions.map((item) => `<p class="list-meta">${escapeHtml(item)}</p>`).join('')}
+  `;
+}
+
+function renderChart(points) {
+  if (!points.length) {
+    return '<div class="empty">暂无可绘制数据。</div>';
+  }
+
+  const values = points.map((point) => point.value);
+  const min = Math.min(...values, 0);
+  const max = Math.max(...values, 100);
+  const width = 640;
+  const height = 240;
+  const padding = 34;
+  const plotWidth = width - padding * 2;
+  const plotHeight = height - padding * 2;
+  const coords = points.map((point, index) => {
+    const x = padding + (points.length === 1 ? plotWidth / 2 : (index / (points.length - 1)) * plotWidth);
+    const y = padding + plotHeight - ((point.value - min) / Math.max(max - min, 1)) * plotHeight;
+    return { x, y, point };
+  });
+  const path = coords.map((coord, index) => `${index === 0 ? 'M' : 'L'} ${coord.x} ${coord.y}`).join(' ');
+  const area = `${path} L ${coords.at(-1).x} ${height - padding} L ${coords[0].x} ${height - padding} Z`;
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="成绩趋势图">
+      <defs>
+        <linearGradient id="scoreArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0.08" />
+        </linearGradient>
+      </defs>
+      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#94a3b8" />
+      <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#94a3b8" />
+      <path d="${area}" fill="url(#scoreArea)" />
+      <path d="${path}" fill="none" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      ${coords.map((coord) => `<circle cx="${coord.x}" cy="${coord.y}" r="5" fill="#2563eb"><title>${escapeHtml(coord.point.label)}：${coord.point.value}</title></circle>`).join('')}
+    </svg>
+  `;
+}
+
+function renderSettingsView() {
+  return `
+    <div class="grid">
+      <section class="card span-6">
+        <h3 class="card-title">考试类型和排名项</h3>
+        <form id="settings-form">
+          <div class="field">
+            <label>考试类型，每行一个</label>
+            <textarea name="examTypes">${state.settings.examTypes.join('\n')}</textarea>
+          </div>
+          <div class="field" style="margin-top: 14px;">
+            <label>启用排名项</label>
+            <div class="checkbox-row">
+              ${RANK_COLUMNS.map((rank) => `<label><input type="checkbox" name="rank" value="${rank}" ${state.settings.enabledRanks.includes(rank) ? 'checked' : ''} />${rank}</label>`).join('')}
+            </div>
+          </div>
+          <div class="actions">
+            <button class="button" type="submit">保存配置</button>
+            <button class="button ghost" id="restore-settings" type="button">恢复默认</button>
+          </div>
+        </form>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">科目模板</h3>
+        <form id="subjects-form">
+          <div class="form-grid">
+            <div class="field span-6"><label>阶段</label><select name="stage">${renderOptions(STAGES, '初中')}</select></div>
+            <div class="field span-6"><label>年级</label><select name="grade">${renderGradeOptions('初中', '初一')}</select></div>
+            <div class="field span-12"><label>科目，用顿号、逗号或换行分隔</label><textarea name="subjects">${(state.settings.subjectTemplates['初中']?.['初一'] || []).join('、')}</textarea></div>
+          </div>
+          <div class="actions"><button class="button" type="submit">保存科目模板</button></div>
+        </form>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">折算比例</h3>
+        <form id="ratios-form">
+          <div class="form-grid">
+            <div class="field span-6"><label>阶段</label><select name="stage">${renderOptions(STAGES, '初中')}</select></div>
+            <div class="field span-12"><label>科目=比例，每行一个</label><textarea name="ratios">${formatRatios(state.settings.subjectRatios['初中'])}</textarea></div>
+          </div>
+          <div class="actions"><button class="button" type="submit">保存折算比例</button></div>
+        </form>
+      </section>
+    </div>
+  `;
+}
+
+function renderHelpView() {
+  return `
+    <div class="grid">
+      <section class="card span-12">
+        <h3 class="card-title">系统亮点</h3>
+        <div class="feature-grid">
+          <div class="feature-item"><strong>本地保存</strong><span>数据存放在浏览器 IndexedDB 中，无需后端。</span></div>
+          <div class="feature-item"><strong>模板导入</strong><span>下载空模板后用 Excel 填写，再导入生成成绩记录。</span></div>
+          <div class="feature-item"><strong>折算配置</strong><span>按阶段维护科目折算比例，适配小四门和物理折算。</span></div>
+          <div class="feature-item"><strong>趋势分析</strong><span>同阶段内做全科或单科走势判断，并给出补强建议。</span></div>
+        </div>
+      </section>
+      <section class="card span-12">
+        <h3 class="card-title">主要功能</h3>
+        <div class="feature-grid">
+          <div class="feature-item"><strong>登记信息</strong><span>维护多个学生的姓名、性别、出生年月和在读年级。</span></div>
+          <div class="feature-item"><strong>录入成绩</strong><span>录入原始成绩、折算比例、单科排名和总分排名。</span></div>
+          <div class="feature-item"><strong>导入导出</strong><span>支持空模板、成绩 CSV、完整 JSON 备份与恢复。</span></div>
+          <div class="feature-item"><strong>参数配置</strong><span>自定义考试类型、排名项、科目模板和折算比例。</span></div>
+        </div>
+      </section>
+      <section class="card span-12">
+        <h3 class="card-title">推荐使用流程</h3>
+        <div class="notice">
+          <strong>1. 登记学生 → 2. 参数确认 → 3. 录入或模板导入成绩 → 4. 查询和趋势分析 → 5. 定期导出备份</strong>
+          空模板是 CSV 文件，可用 Excel 打开填写；导入时请保留第一行列名。
+        </div>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">导入规则</h3>
+        <p class="list-meta">每个科目占一行，同一次考试的学生、阶段、年级、学期、考试类型和考试日期保持一致。原始成绩必须在 0 到 1000 之间，折算比例必须在 0 到 10 之间；同一次考试不能重复科目。</p>
+      </section>
+      <section class="card span-6">
+        <h3 class="card-title">数据说明</h3>
+        <p class="list-meta">所有数据保存在当前浏览器的 IndexedDB 中。换电脑或清理浏览器数据前，请先在“导入导出”里导出 JSON 备份。</p>
+      </section>
+      <section class="card span-12">
+        <h3 class="card-title">更新记录</h3>
+        <div class="timeline">
+          <p><strong>V0.2</strong> 完成上线前可靠性加固：新增备份导入校验、导入前自动备份、成绩编辑删除、重复记录拦截、异常成绩校验、Excel 导出、CSV 公式防护和单文件本地存储提醒。</p>
+          <p><strong>V0.1</strong> 完成学生登记、成绩录入、模板导入导出、查询、趋势分析和参数配置。</p>
+          <p><strong>V0.1 UI 调整</strong> 优化录入页布局、参数配置宽度、说明页内容和侧栏版本显示。</p>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function bindViewEvents() {
+  if (state.view === 'students') bindStudentsView();
+  if (state.view === 'entry') bindEntryView();
+  if (state.view === 'importExport') bindImportExportView();
+  if (state.view === 'query') bindQueryView();
+  if (state.view === 'trend') bindTrendView();
+  if (state.view === 'settings') bindSettingsView();
+}
+
+function renderNavIcon(id) {
+  const paths = {
+    students: '<path d="M8 7.5a4 4 0 1 0 8 0a4 4 0 0 0-8 0Z"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+    entry: '<path d="M4 19.5h4.5L19 9a2.8 2.8 0 0 0-4-4L4.5 15.5 4 19.5Z"/><path d="M13.5 6.5l4 4"/>',
+    importExport: '<path d="M8 4v12"/><path d="M4.5 12.5 8 16l3.5-3.5"/><path d="M16 20V8"/><path d="M12.5 11.5 16 8l3.5 3.5"/>',
+    query: '<circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/>',
+    trend: '<path d="M4 17h16"/><path d="M5 15l4-5 4 3 5-7"/><path d="M18 6h-4"/><path d="M18 6v4"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.04.04a2 2 0 1 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 1 1-4 0v-.06a1.7 1.7 0 0 0-1-.54 1.7 1.7 0 0 0-1.87.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 1 1 0-4h.06a1.7 1.7 0 0 0 .54-1 1.7 1.7 0 0 0-.34-1.87l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 1 1 4 0v.06a1.7 1.7 0 0 0 1 .54 1.7 1.7 0 0 0 1.87-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.2.34.4.67.6 1H20a2 2 0 1 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.4 2.4 0 0 1 4.6 1.1c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17.2h.01"/>',
+  };
+
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[id] || paths.help}</svg>`;
+}
+
+function bindStudentsView() {
+  const form = document.querySelector('#student-form');
+  form?.currentStage.addEventListener('change', () => {
+    form.currentGrade.innerHTML = renderGradeOptions(form.currentStage.value, '');
+  });
+  form?.birthMonth.addEventListener('change', () => {
+    const recommendation = recommendStageAndGrade(form.birthMonth.value);
+    form.currentStage.value = recommendation.stage;
+    form.currentGrade.innerHTML = renderGradeOptions(recommendation.stage, recommendation.grade);
+  });
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const now = new Date().toISOString();
+    await putItem('students', {
+      id: createId('student'),
+      name: data.get('name').trim(),
+      gender: data.get('gender'),
+      birthMonth: data.get('birthMonth'),
+      currentStage: data.get('currentStage'),
+      currentGrade: data.get('currentGrade'),
+      createdAt: now,
+      updatedAt: now,
+    });
+    await refresh('学生已保存');
+  });
+  document.querySelectorAll('[data-delete-student]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const hasScores = state.scores.some((score) => score.studentId === button.dataset.deleteStudent);
+      if (hasScores) {
+        showMessage('该学生已有成绩记录，暂不允许删除。', 'error');
+        return;
+      }
+      if (!window.confirm('确定删除该学生信息吗？')) {
+        return;
+      }
+      await deleteItem('students', button.dataset.deleteStudent);
+      await refresh('学生已删除');
+    });
+  });
+}
+
+function bindEntryView() {
+  const form = document.querySelector('#entry-form');
+  if (!form) return;
+
+  form.studentId.addEventListener('change', () => {
+    const student = state.students.find((item) => item.id === form.studentId.value);
+    state.entry.studentId = form.studentId.value;
+    state.entry.stage = student?.currentStage || state.entry.stage;
+    state.entry.grade = student?.currentGrade || state.entry.grade;
+    state.editingScoreId = null;
+    state.entryRecord = null;
+    render();
+  });
+  form.stage.addEventListener('change', () => {
+    state.entry.stage = form.stage.value;
+    state.entry.grade = Object.keys(state.settings.subjectTemplates[state.entry.stage] || {})[0] || '';
+    state.editingScoreId = null;
+    state.entryRecord = null;
+    render();
+  });
+  form.grade.addEventListener('change', () => {
+    state.entry.grade = form.grade.value;
+    state.editingScoreId = null;
+    state.entryRecord = null;
+    render();
+  });
+  ['semester', 'examType', 'examDate'].forEach((name) => {
+    form[name].addEventListener('change', () => {
+      state.entry[name] = form[name].value;
+    });
+  });
+
+  form.querySelectorAll('[data-subject-raw], [data-subject-ratio]').forEach((input) => {
+    input.addEventListener('input', updateEntryTotals);
+  });
+  updateEntryTotals();
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      const record = readEntryRecord();
+      const duplicate = findDuplicateScore(state.scores, record);
+      if (duplicate) {
+        throw new Error('同一学生同一考试已存在，请在查询成绩中编辑原记录，或修改考试日期/类型。');
+      }
+      await putItem('scores', record);
+      state.editingScoreId = null;
+      state.entryRecord = null;
+      await refresh('成绩已保存');
+    } catch (error) {
+      showMessage(error.message, 'error');
+    }
+  });
+
+  form.querySelector('#save-draft')?.addEventListener('click', async () => {
+    try {
+      await putItem('drafts', { id: 'score-entry', value: readEntryRecord({ draft: true, allowEmpty: true }) });
+      showMessage('当前录入内容已暂存');
+    } catch (error) {
+      showMessage(error.message, 'error');
+    }
+  });
+  form.querySelector('#restore-draft')?.addEventListener('click', () => {
+    state.editingScoreId = null;
+    state.entryRecord = state.draft;
+    state.entry = {
+      studentId: state.draft.studentId,
+      stage: state.draft.stage,
+      grade: state.draft.grade,
+      semester: state.draft.semester,
+      examType: state.draft.examType,
+      examDate: state.draft.examDate,
+    };
+    render();
+    showMessage('已恢复暂存内容');
+  });
+  form.querySelector('#cancel-edit')?.addEventListener('click', () => {
+    state.editingScoreId = null;
+    state.entryRecord = null;
+    hydrateEntryDefaults();
+    render();
+  });
+  form.querySelector('#clear-entry')?.addEventListener('click', () => {
+    form.querySelectorAll('[data-subject-raw], [data-subject-raw-rank], [data-subject-converted-rank]').forEach((input) => (input.value = ''));
+    form.querySelectorAll('[name^="rank-"]').forEach((input) => (input.value = ''));
+    form.totalRawRank.value = '';
+    form.totalConvertedRank.value = '';
+    updateEntryTotals();
+  });
+  form.querySelector('#download-current-template')?.addEventListener('click', () => {
+    downloadText(buildCurrentBlankTemplate(), `成绩空模板-${todayString()}.csv`, 'text/csv;charset=utf-8');
+  });
+  form.querySelector('#download-current-template-excel')?.addEventListener('click', () => {
+    downloadText(buildCurrentBlankTemplateExcel(), `成绩空模板-${todayString()}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+  });
+  form.querySelector('#export-current-entry')?.addEventListener('click', () => {
+    const record = readEntryRecord({ allowEmpty: true });
+    downloadText(exportRecordsToCsv([record]), `当前录入成绩-${record.studentName}-${record.examDate}.csv`, 'text/csv;charset=utf-8');
+  });
+  form.querySelector('#export-current-entry-excel')?.addEventListener('click', () => {
+    const record = readEntryRecord({ allowEmpty: true });
+    downloadText(exportRecordsToExcelHtml([record]), `当前录入成绩-${record.studentName}-${record.examDate}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+  });
+}
+
+function bindImportExportView() {
+  const templateForm = document.querySelector('#template-form');
+  templateForm?.stage.addEventListener('change', () => {
+    templateForm.grade.innerHTML = renderGradeOptions(templateForm.stage.value, '');
+  });
+  templateForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const csv = buildBlankTemplateFromForm(templateForm);
+    downloadText(csv, `成绩空模板-${todayString()}.csv`, 'text/csv;charset=utf-8');
+  });
+  document.querySelector('#download-template-excel')?.addEventListener('click', () => {
+    const excel = buildBlankTemplateFromFormExcel(templateForm);
+    downloadText(excel, `成绩空模板-${todayString()}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+  });
+
+  document.querySelector('#import-score-file')?.addEventListener('click', async () => {
+    const file = document.querySelector('#score-import-file').files[0];
+    if (!file) {
+      showMessage('请先选择填写后的 CSV 模板', 'error');
+      return;
+    }
+
+    const result = parseScoreTemplateCsv(await file.text());
+    const resultBox = document.querySelector('#import-result');
+    if (result.errors.length) {
+      resultBox.innerHTML = `<strong>导入失败</strong>${result.errors.map((error) => `<p>第 ${error.row} 行 ${escapeHtml(error.column)}：${escapeHtml(error.message)}</p>`).join('')}`;
+      return;
+    }
+
+    let savedCount = 0;
+    let skippedCount = 0;
+    for (const importedRecord of result.records) {
+      const student = await ensureStudent(importedRecord);
+      const record = createScoreRecord({
+        ...importedRecord,
+        studentId: student.id,
+        studentName: student.name,
+        birthMonth: student.birthMonth,
+      });
+      if (findDuplicateScore(state.scores, record)) {
+        skippedCount += 1;
+        continue;
+      }
+      await putItem('scores', record);
+      state.scores.push(record);
+      savedCount += 1;
+    }
+    await loadData();
+    resultBox.innerHTML = `<strong>导入完成</strong>已生成 ${savedCount} 条成绩记录${skippedCount ? `，跳过 ${skippedCount} 条重复记录` : ''}。`;
+  });
+
+  document.querySelector('#export-form')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const filters = Object.fromEntries(new FormData(event.currentTarget));
+    const records = filterScores(filters);
+    downloadText(exportRecordsToCsv(records), `成绩导出-${todayString()}.csv`, 'text/csv;charset=utf-8');
+  });
+  document.querySelector('#export-filtered-excel')?.addEventListener('click', () => {
+    const form = document.querySelector('#export-form');
+    const records = filterScores(Object.fromEntries(new FormData(form)));
+    downloadText(exportRecordsToExcelHtml(records), `成绩导出-${todayString()}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+  });
+
+  document.querySelector('#export-backup')?.addEventListener('click', async () => {
+    const backup = await exportBackup();
+    downloadText(JSON.stringify(backup, null, 2), `学生成绩记录备份-${todayString()}.json`, 'application/json;charset=utf-8');
+  });
+
+  document.querySelector('#backup-import-file')?.addEventListener('change', async (event) => {
+    const file = event.currentTarget.files[0];
+    if (!file) return;
+    try {
+      const payload = JSON.parse(await file.text());
+      const validation = validateBackupPayload(payload);
+      const resultBox = document.querySelector('#backup-import-result');
+      if (!validation.ok) {
+        resultBox.innerHTML = `<strong>备份校验失败</strong>${validation.errors.slice(0, 8).map((error) => `<p>${escapeHtml(error)}</p>`).join('')}`;
+        return;
+      }
+      resultBox.innerHTML = `<strong>备份预览</strong><p>学生 ${validation.summary.students} 个，成绩 ${validation.summary.scores} 条。导入会覆盖当前全部数据。</p>`;
+      if (!window.confirm(`即将导入备份：学生 ${validation.summary.students} 个，成绩 ${validation.summary.scores} 条。导入前会自动下载当前数据备份，确定继续吗？`)) {
+        return;
+      }
+      const currentBackup = await exportBackup();
+      downloadText(JSON.stringify(currentBackup, null, 2), `导入前自动备份-${todayString()}.json`, 'application/json;charset=utf-8');
+      await importBackup(validation.payload);
+      await refresh('备份已导入');
+    } catch (error) {
+      showMessage(error.message, 'error');
+    }
+    event.currentTarget.value = '';
+  });
+}
+
+function bindQueryView() {
+  let currentRecords = state.scores;
+  const list = document.querySelector('#query-list');
+  document.querySelector('#query-form')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    currentRecords = filterScores(Object.fromEntries(new FormData(event.currentTarget)));
+    list.innerHTML = renderRecordList(currentRecords);
+    bindRecordDetails();
+  });
+  document.querySelector('#query-export')?.addEventListener('click', () => {
+    downloadText(exportRecordsToCsv(currentRecords), `成绩查询结果-${todayString()}.csv`, 'text/csv;charset=utf-8');
+  });
+  document.querySelector('#query-export-excel')?.addEventListener('click', () => {
+    downloadText(exportRecordsToExcelHtml(currentRecords), `成绩查询结果-${todayString()}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+  });
+  bindRecordDetails();
+}
+
+function bindRecordDetails() {
+  document.querySelectorAll('[data-edit-score]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const record = state.scores.find((score) => score.id === button.dataset.editScore);
+      if (!record) return;
+      state.view = 'entry';
+      state.editingScoreId = record.id;
+      state.entryRecord = null;
+      state.entry = {
+        studentId: record.studentId,
+        stage: record.stage,
+        grade: record.grade,
+        semester: record.semester,
+        examType: record.examType,
+        examDate: record.examDate,
+      };
+      render();
+    });
+  });
+  document.querySelectorAll('[data-delete-score]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const record = state.scores.find((score) => score.id === button.dataset.deleteScore);
+      if (!record) return;
+      if (!window.confirm(`确定删除 ${record.studentName} ${record.examType} ${record.examDate} 的成绩吗？删除前建议先导出 JSON 备份。`)) {
+        return;
+      }
+      await deleteItem('scores', record.id);
+      await refresh('成绩已删除');
+    });
+  });
+  document.querySelectorAll('[data-toggle-detail]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelector(`#detail-${CSS.escape(button.dataset.toggleDetail)}`)?.classList.toggle('open');
+    });
+  });
+}
+
+function bindTrendView() {
+  const form = document.querySelector('#trend-form');
+  const subjectField = document.querySelector('#trend-subject-field');
+  form?.mode.addEventListener('change', () => {
+    subjectField?.classList.toggle('hidden', form.mode.value === 'all');
+  });
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+    const records = filterScores({ studentId: data.studentId, stage: data.stage });
+    const analysis = analyzeTrend(records, data.mode === 'subject' ? { type: 'subject', subject: data.subject } : { type: 'all' });
+    document.querySelector('#trend-chart').innerHTML = renderChart(analysis.points);
+    document.querySelector('#trend-result').innerHTML = renderTrendResult(analysis);
+  });
+}
+
+function bindSettingsView() {
+  document.querySelector('#settings-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    state.settings.examTypes = form.examTypes.value
+      .split(/\n+/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+    state.settings.enabledRanks = [...form.querySelectorAll('input[name="rank"]:checked')].map((input) => input.value);
+    await saveSettings(state.settings);
+    await refresh('配置已保存');
+  });
+  document.querySelector('#restore-settings')?.addEventListener('click', async () => {
+    if (!window.confirm('确定恢复默认参数配置吗？当前自定义考试类型、科目模板和折算比例会被覆盖。')) {
+      return;
+    }
+    await restoreDefaultSettings();
+    await refresh('已恢复默认配置');
+  });
+  const subjectsForm = document.querySelector('#subjects-form');
+  subjectsForm?.stage.addEventListener('change', () => {
+    subjectsForm.grade.innerHTML = renderGradeOptions(subjectsForm.stage.value, '');
+    subjectsForm.subjects.value = (state.settings.subjectTemplates[subjectsForm.stage.value]?.[subjectsForm.grade.value] || []).join('、');
+  });
+  subjectsForm?.grade.addEventListener('change', () => {
+    subjectsForm.subjects.value = (state.settings.subjectTemplates[subjectsForm.stage.value]?.[subjectsForm.grade.value] || []).join('、');
+  });
+  subjectsForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const subjects = form.subjects.value
+      .split(/[、,\n，]+/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+    state.settings.subjectTemplates[form.stage.value][form.grade.value] = subjects;
+    await saveSettings(state.settings);
+    await refresh('科目模板已保存');
+  });
+
+  const ratiosForm = document.querySelector('#ratios-form');
+  ratiosForm?.stage.addEventListener('change', () => {
+    ratiosForm.ratios.value = formatRatios(state.settings.subjectRatios[ratiosForm.stage.value] || {});
+  });
+  ratiosForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    state.settings.subjectRatios[form.stage.value] = parseRatios(form.ratios.value);
+    await saveSettings(state.settings);
+    await refresh('折算比例已保存');
+  });
+}
+
+function readEntryRecord(options = {}) {
+  const form = document.querySelector('#entry-form');
+  const student = state.students.find((item) => item.id === form.studentId.value);
+  const subjects = [...form.querySelectorAll('[data-subject-raw]')].map((rawInput) => {
+    const name = rawInput.dataset.subjectRaw;
+    const ratioInput = form.querySelector(`[data-subject-ratio="${cssAttrEscape(name)}"]`);
+    const rawRankInput = form.querySelector(`[data-subject-raw-rank="${cssAttrEscape(name)}"]`);
+    const convertedRankInput = form.querySelector(`[data-subject-converted-rank="${cssAttrEscape(name)}"]`);
+    return {
+      name,
+      rawScore: Number(rawInput.value || 0),
+      ratio: Number(ratioInput.value || 1),
+      rawRank: rawRankInput.value ? Number(rawRankInput.value) : undefined,
+      convertedRank: convertedRankInput.value ? Number(convertedRankInput.value) : undefined,
+    };
+  });
+  const ranks = {};
+
+  if (!options.allowEmpty && subjects.every((subject) => subject.rawScore === 0)) {
+    throw new Error('请至少录入一个科目的成绩');
+  }
+
+  return createScoreRecord({
+    id: options.draft ? 'draft-score-entry' : state.editingScoreId || undefined,
+    studentId: student.id,
+    studentName: student.name,
+    birthMonth: student.birthMonth,
+    stage: form.stage.value,
+    grade: form.grade.value,
+    semester: form.semester.value,
+    examType: form.examType.value,
+    examDate: form.examDate.value || todayString(),
+    subjects,
+    ranks,
+    totalRanks: {
+      rawRank: form.totalRawRank.value ? Number(form.totalRawRank.value) : undefined,
+      convertedRank: form.totalConvertedRank.value ? Number(form.totalConvertedRank.value) : undefined,
+    },
+    createdAt: state.editingScoreId ? state.scores.find((score) => score.id === state.editingScoreId)?.createdAt : undefined,
+  });
+}
+
+function updateEntryTotals() {
+  const form = document.querySelector('#entry-form');
+  const subjects = [...form.querySelectorAll('[data-subject-raw]')].map((rawInput) => {
+    const name = rawInput.dataset.subjectRaw;
+    const ratioInput = form.querySelector(`[data-subject-ratio="${cssAttrEscape(name)}"]`);
+    const rawScore = Number(rawInput.value || 0);
+    const ratio = Number(ratioInput.value || 1);
+    const convertedScore = Math.round(rawScore * ratio * 100) / 100;
+    form.querySelector(`[data-subject-converted="${cssAttrEscape(name)}"]`).textContent = convertedScore;
+    return { name, rawScore, ratio, convertedScore };
+  });
+  const totals = calculateTotals(subjects);
+  document.querySelector('#entry-total-raw').textContent = totals.totalRawScore;
+  document.querySelector('#entry-total-converted').textContent = totals.totalConvertedScore;
+}
+
+function buildCurrentBlankTemplate() {
+  const form = document.querySelector('#entry-form');
+  return generateBlankScoreTemplateCsv(buildCurrentTemplateOptions(form));
+}
+
+function buildCurrentBlankTemplateExcel() {
+  const form = document.querySelector('#entry-form');
+  return generateBlankScoreTemplateExcelHtml(buildCurrentTemplateOptions(form));
+}
+
+function buildCurrentTemplateOptions(form) {
+  const student = state.students.find((item) => item.id === form.studentId.value);
+  const subjects = getSubjectsForGrade(
+    form.stage.value,
+    form.grade.value,
+    state.settings.subjectTemplates,
+    state.settings.subjectRatios,
+  );
+  return {
+    studentName: student.name,
+    birthMonth: student.birthMonth,
+    stage: form.stage.value,
+    grade: form.grade.value,
+    semester: form.semester.value,
+    examType: form.examType.value,
+    examDate: form.examDate.value || todayString(),
+    subjects,
+    enabledRanks: state.settings.enabledRanks,
+  };
+}
+
+function buildBlankTemplateFromForm(form) {
+  return generateBlankScoreTemplateCsv(buildBlankTemplateOptionsFromForm(form));
+}
+
+function buildBlankTemplateFromFormExcel(form) {
+  return generateBlankScoreTemplateExcelHtml(buildBlankTemplateOptionsFromForm(form));
+}
+
+function buildBlankTemplateOptionsFromForm(form) {
+  const student = state.students.find((item) => item.id === form.studentId.value);
+  return {
+    studentName: student?.name || '',
+    birthMonth: student?.birthMonth || '',
+    stage: form.stage.value,
+    grade: form.grade.value,
+    semester: form.semester.value,
+    examType: form.examType.value,
+    examDate: form.examDate.value || todayString(),
+    subjects: getSubjectsForGrade(
+      form.stage.value,
+      form.grade.value,
+      state.settings.subjectTemplates,
+      state.settings.subjectRatios,
+    ),
+    enabledRanks: state.settings.enabledRanks,
+  };
+}
+
+async function ensureStudent(importedRecord) {
+  const existing = state.students.find((student) => student.name === importedRecord.studentName);
+  if (existing) return existing;
+
+  const now = new Date().toISOString();
+  const student = {
+    id: createId('student'),
+    name: importedRecord.studentName,
+    gender: '其他',
+    birthMonth: importedRecord.birthMonth || '',
+    currentStage: importedRecord.stage,
+    currentGrade: importedRecord.grade,
+    createdAt: now,
+    updatedAt: now,
+  };
+  await putItem('students', student);
+  state.students.push(student);
+  return student;
+}
+
+function filterScores(filters) {
+  return state.scores.filter((score) => {
+    return (
+      (!filters.studentId || score.studentId === filters.studentId) &&
+      (!filters.stage || score.stage === filters.stage) &&
+      (!filters.semester || score.semester === filters.semester) &&
+      (!filters.examType || score.examType === filters.examType)
+    );
+  });
+}
+
+function getSelectedStudent() {
+  return state.students.find((student) => student.id === state.entry.studentId) || state.students[0];
+}
+
+function getCurrentEntryRecord() {
+  if (state.entryRecord) {
+    return state.entryRecord;
+  }
+  if (state.editingScoreId) {
+    return state.scores.find((score) => score.id === state.editingScoreId) || null;
+  }
+  return null;
+}
+
+function getAllSubjects() {
+  const subjects = new Set();
+  for (const templatesByGrade of Object.values(state.settings.subjectTemplates)) {
+    for (const subjectsForGrade of Object.values(templatesByGrade)) {
+      subjectsForGrade.forEach((subject) => subjects.add(subject));
+    }
+  }
+  return [...subjects];
+}
+
+function formatRatios(ratios = {}) {
+  return Object.entries(ratios)
+    .map(([subject, ratio]) => `${subject}=${ratio}`)
+    .join('\n');
+}
+
+function parseRatios(text) {
+  const ratios = {};
+  for (const line of text.split(/\n+/)) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const [subject, ratioText] = trimmed.split(/[=＝:：]/).map((item) => item.trim());
+    const ratio = Number(ratioText);
+    if (subject && Number.isFinite(ratio) && ratio > 0) {
+      ratios[subject] = ratio;
+    }
+  }
+  return ratios;
+}
+
+async function refresh(message) {
+  await loadData();
+  if (!state.students.some((student) => student.id === state.entry.studentId)) {
+    hydrateEntryDefaults();
+  }
+  render();
+  showMessage(message);
+}
+
+function showMessage(message, type = 'success') {
+  document.querySelector('.message')?.remove();
+  const node = document.createElement('div');
+  node.className = `message ${type === 'error' ? 'error' : ''}`;
+  node.textContent = message;
+  document.body.append(node);
+  setTimeout(() => node.remove(), 3200);
+}
+
+function downloadText(content, filename, type) {
+  const blob = new Blob([type.startsWith('text/csv') ? `\uFEFF${content}` : content], { type });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function renderOptions(options, selectedValue) {
+  return options.map((option) => `<option value="${escapeHtml(option)}" ${option === selectedValue ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('');
+}
+
+function renderGradeOptions(stage, selectedValue) {
+  const grades = Object.keys(state.settings?.subjectTemplates?.[stage] || DEFAULT_SUBJECT_TEMPLATES[stage] || {});
+  return grades.map((grade) => `<option value="${escapeHtml(grade)}" ${grade === selectedValue ? 'selected' : ''}>${escapeHtml(grade)}</option>`).join('');
+}
+
+function cssAttrEscape(value) {
+  return String(value).replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+    </script>
+  </body>
+</html>
