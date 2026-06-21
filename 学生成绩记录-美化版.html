@@ -2084,9 +2084,7 @@ function renderEntryView() {
           ${state.draft ? '<button class="button ghost" type="button" id="restore-draft">恢复暂存</button>' : ''}
           ${state.editingScoreId ? '<button class="button ghost" type="button" id="cancel-edit">取消编辑</button>' : ''}
           <button class="button ghost" type="button" id="clear-entry">清空</button>
-          <button class="button ghost" type="button" id="download-current-template">下载空模板</button>
           <button class="button ghost" type="button" id="download-current-template-excel">下载 Excel 模板</button>
-          <button class="button ghost" type="button" id="export-current-entry">导出当前录入数据</button>
           <button class="button ghost" type="button" id="export-current-entry-excel">导出当前 Excel</button>
         </div>
       </section>
@@ -2603,15 +2601,8 @@ function bindEntryView() {
     form.totalConvertedRank.value = '';
     updateEntryTotals();
   });
-  form.querySelector('#download-current-template')?.addEventListener('click', () => {
-    downloadText(buildCurrentBlankTemplate(), `成绩空模板-${todayString()}.csv`, 'text/csv;charset=utf-8');
-  });
   form.querySelector('#download-current-template-excel')?.addEventListener('click', () => {
     downloadText(buildCurrentBlankTemplateExcel(), `成绩空模板-${todayString()}.xls`, 'application/vnd.ms-excel;charset=utf-8');
-  });
-  form.querySelector('#export-current-entry')?.addEventListener('click', () => {
-    const record = readEntryRecord({ allowEmpty: true });
-    downloadText(exportRecordsToCsv([record]), `当前录入成绩-${record.studentName}-${record.examDate}.csv`, 'text/csv;charset=utf-8');
   });
   form.querySelector('#export-current-entry-excel')?.addEventListener('click', () => {
     const record = readEntryRecord({ allowEmpty: true });
