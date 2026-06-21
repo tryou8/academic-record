@@ -17,7 +17,7 @@ button{cursor:pointer;}
 .brand{display:flex;align-items:center;gap:12px;padding:0 6px 4px;}
 .logo{display:grid;width:42px;height:42px;place-items:center;border-radius:13px;font-size:21px;font-weight:800;}
 .brand-title{margin:0;font-size:17px;font-weight:750;}
-.brand-subtitle{margin:3px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;}
+.brand-subtitle{margin:3px 0 0;font-size:10px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
 .nav{display:grid;gap:6px;}
 .nav-button{display:flex;align-items:center;gap:11px;width:100%;min-height:42px;border:0;border-radius:11px;padding:10px 13px;text-align:left;font-size:14px;font-weight:600;transition:background .16s ease,color .16s ease;}
 .nav-icon{display:inline-grid;width:22px;height:22px;place-items:center;}
@@ -70,6 +70,7 @@ td input,td select{width:100%;min-width:90px;}
 .settings-grid .card{display:flex;flex-direction:column;}
 .settings-grid form{flex:1;display:flex;flex-direction:column;}
 .settings-grid form .actions{margin-top:auto;}
+.settings-grid .field textarea{min-height:150px;}
 @media (max-width:760px){.form-grid.trend-condition{grid-template-columns:1fr;}}
 .form-grid.ratio-grid{grid-template-columns:1fr 2fr;align-items:start;}
 @media (max-width:760px){.form-grid.ratio-grid{grid-template-columns:1fr;}}
@@ -382,8 +383,8 @@ const DEFAULT_SUBJECT_RATIOS = {
   高中: {},
 };
 
-const MAX_RAW_SCORE = 1000;
-const MAX_RATIO = 10;
+const MAX_RAW_SCORE = 150;
+const MAX_RATIO = 1;
 
 const BASE_TEMPLATE_COLUMNS = [
   '学生姓名',
@@ -2064,8 +2065,8 @@ function renderEntryView() {
                     <tr>
                       <td><button type="button" class="subject-delete" data-subject-delete="${escapeHtml(subject.name)}" title="删除该科目" aria-label="删除科目 ${escapeHtml(subject.name)}">×</button></td>
                       <td>${escapeHtml(subject.name)}</td>
-                      <td><input data-subject-raw="${escapeHtml(subject.name)}" type="number" min="0" max="1000" step="0.5" placeholder="0" value="${subject.rawScore ?? ''}" /></td>
-                      <td><input data-subject-ratio="${escapeHtml(subject.name)}" type="number" min="0.01" step="0.01" value="${subject.ratio}" /></td>
+                      <td><input data-subject-raw="${escapeHtml(subject.name)}" type="number" min="0" max="150" step="0.5" placeholder="0" value="${subject.rawScore ?? ''}" /></td>
+                      <td><input data-subject-ratio="${escapeHtml(subject.name)}" type="number" min="0.1" max="1" step="0.1" value="${subject.ratio}" /></td>
                       <td data-subject-converted="${escapeHtml(subject.name)}">0</td>
                       <td><input data-subject-raw-rank="${escapeHtml(subject.name)}" type="number" min="1" step="1" placeholder="可选" value="${subject.rawRank ?? ''}" /></td>
                       <td><input data-subject-converted-rank="${escapeHtml(subject.name)}" type="number" min="1" step="1" placeholder="可选" value="${subject.convertedRank ?? ''}" /></td>
@@ -2393,7 +2394,7 @@ function renderHelpView() {
       </section>
       <section class="card span-6">
         <h3 class="card-title">导入规则</h3>
-        <p class="list-meta">每个科目占一行，同一次考试的学生、阶段、年级、学期、考试类型和考试日期保持一致。原始成绩必须在 0 到 1000 之间，折算比例必须在 0 到 10 之间；同一次考试不能重复科目。</p>
+        <p class="list-meta">每个科目占一行，同一次考试的学生、阶段、年级、学期、考试类型和考试日期保持一致。原始成绩必须在 0 到 150 之间，折算比例必须在 0 到 1.0 之间（小数点 1 位）；同一次考试不能重复科目。</p>
       </section>
       <section class="card span-6">
         <h3 class="card-title">数据说明</h3>
